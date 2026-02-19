@@ -1,0 +1,5 @@
+name: fish_chips_quiz
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+dependencies:
+  sqlite3: ^2.1.0
