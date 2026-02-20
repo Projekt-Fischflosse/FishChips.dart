@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:sqlite3/sqlite3.dart';
 
 void main() {
@@ -12,12 +10,12 @@ void main() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       category TEXT NOT NULL,
       difficulty TEXT,
-      question TEXT NOT NULL,
-      option_a TEXT NOT NULL,
-      option_b TEXT NOT NULL,
-      option_c TEXT NOT NULL,
-      option_d TEXT NOT NULL,
-      correct_answer TEXT NOT NULL,
+      question TEXT,
+      option_a TEXT,
+      option_b TEXT,
+      option_c TEXT,
+      option_d TEXT,
+      correct_answer TEXT,
       explanation TEXT,
       created_date TEXT
     )
