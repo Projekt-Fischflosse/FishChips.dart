@@ -83,5 +83,5 @@ void main() {
   stmt.dispose();
   db.dispose();
 
-  print('🐟🍟 ${fragen.length} Fragen hinzugefügt!');
+  print(' ${fragen.length} Fragen hinzugefügt!');
 }
