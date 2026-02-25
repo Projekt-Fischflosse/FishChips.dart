@@ -6,15 +6,23 @@ void main() {
 
   // 10 Fragen für Cybersecurity definieren
   final fragen = [
-    {
-      // Kategorie für spätere Filterung
+   {
+      // Kategorie für spätere Filterung 
       'category': 'Cybersecurity',
+
+      // Frage
       'question': 'Was ist ein Phishing-Angriff?',
+
+      // Antwortoptionen
       'option_a': 'Ein Angriff mit einem Fischernetz',
       'option_b': 'Ein betrügerische E-Mail um Passwörter zu stehlen',
       'option_c': 'Ein Computervirus der Datein löscht',
       'option_d': 'Eine Methode um WLANs zu knacken',
+
+      // Richtige Antwort
       'correct_answer': 'B',
+
+      // Erklärung
       'explanation': 'Phishing ist eine Betrugsmasche per E-Mail oder Website, um sensible Daten zu stehlen.',
     },
     {
@@ -113,13 +121,13 @@ void main() {
   // Aktuelles Datum für created_date Spalte
   final now = DateTime.now().toIso8601String();
 
-  // SQL-Statement vorbereiten – wird für jede Frage wiederverwendet
+  // SQL-Statement vorbereiten – wird für jede Frage, Antwortoption und Erklärung wiederverwendet
   final stmt = db.prepare('''
      INSERT INTO questions (category, question, option_a, option_b, option_c, option_d, correct_answer, explanation, created_date)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   ''');
 
-  // Jede Frage einzeln in die Datenbank einfügen
+  // Jede Frage, Antwortoption und Erklärung einzeln in die Datenbank einfügen
  for (final f in fragen) {
     stmt.execute([
       f['category'], f['question'],
