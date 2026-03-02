@@ -6,9 +6,12 @@ void main() {
 
   // 10 Fragen für Cybersecurity definieren
   final fragen = [
-   {
-      // Kategorie für spätere Filterung 
+    {
+      // Kategorie für spätere Filterung
       'category': 'Cybersecurity',
+
+      // Schwierigkeitsgrad
+      'difficulty': 'leicht',
 
       // Frage
       'question': 'Was ist ein Phishing-Angriff?',
@@ -16,7 +19,7 @@ void main() {
       // Antwortoptionen
       'option_a': 'Ein Angriff mit einem Fischernetz',
       'option_b': 'Ein betrügerische E-Mail um Passwörter zu stehlen',
-      'option_c': 'Ein Computervirus der Datein löscht',
+      'option_c': 'Ein Computervirus der Dateien löscht',
       'option_d': 'Eine Methode um WLANs zu knacken',
 
       // Richtige Antwort
@@ -27,6 +30,7 @@ void main() {
     },
     {
       'category': 'Cybersecurity',
+      'difficulty': 'leicht',
       'question': 'Was bedeutet der Begriff Firewall?',
       'option_a': 'Ein Programm das Viren löscht',
       'option_b': 'Eine Brandschutzmauer im Rechenzentrum',
@@ -34,10 +38,10 @@ void main() {
       'option_d': 'Ein verschlüsseltes WLAN-Netzwerk',
       'correct_answer': 'C',
       'explanation': 'Eine Firewall kontrolliert den Datenverkehr zwischen Netzwerken nach festgelegten Regeln.',
-
     },
     {
       'category': 'Cybersecurity',
+      'difficulty': 'mittel',
       'question': 'Was ist der Unterschied zwischen Virus und Trojaner?',
       'option_a': 'Ein Virus ist harmlos, ein Trojaner löscht Dateien',
       'option_b': 'Ein Virus verbreitet sich selbst, ein Trojaner tarnt sich als nützliches Programm',
@@ -48,6 +52,7 @@ void main() {
     },
     {
       'category': 'Cybersecurity',
+      'difficulty': 'mittel',
       'question': 'Was versteht man unter einem Brute-Force-Angriff?',
       'option_a': 'Ein physischer Angriff auf einen Server',
       'option_b': 'Eine Methode bei der alle möglichen Passwörter automatisch ausprobiert werden',
@@ -55,10 +60,10 @@ void main() {
       'option_d': 'Ein Virus der sich selbst verbreitet',
       'correct_answer': 'B',
       'explanation': 'Beim Brute-Force-Angriff werden systematisch alle möglichen Passwortkombinationen ausprobiert bis die richtige gefunden wird.',
-
     },
     {
       'category': 'Cybersecurity',
+      'difficulty': 'leicht',
       'question': 'Was ist Zwei-Faktor-Authentifizierung (2FA)?',
       'option_a': 'Ein doppeltes Passwort für mehr Sicherheit',
       'option_b': 'Eine Methode bei der man sich mit zwei verschiedenen Geräten einloggt',
@@ -69,6 +74,7 @@ void main() {
     },
     {
       'category': 'Cybersecurity',
+      'difficulty': 'leicht',
       'question': 'Was ist der Unterschied zwischen HTTP und HTTPS?',
       'option_a': 'HTTPS ist schneller als HTTP',
       'option_b': 'HTTPS verschlüsselt die Datenübertragung, HTTP nicht',
@@ -79,6 +85,7 @@ void main() {
     },
     {
       'category': 'Cybersecurity',
+      'difficulty': 'mittel',
       'question': 'Was bedeutet Ransomware?',
       'option_a': 'Eine Software die den Computer beschleunigt',
       'option_b': 'Ein Virus der Dateien stiehlt und ins Internet hochlädt',
@@ -89,6 +96,7 @@ void main() {
     },
     {
       'category': 'Cybersecurity',
+      'difficulty': 'leicht',
       'question': 'Was ist ein VPN und wofür wird es genutzt?',
       'option_a': 'Ein Virenschutzprogramm für mobile Geräte',
       'option_b': 'Ein virtuelles privates Netzwerk das die Internetverbindung verschlüsselt und die IP verbirgt',
@@ -99,6 +107,7 @@ void main() {
     },
     {
       'category': 'Cybersecurity',
+      'difficulty': 'mittel',
       'question': 'Was versteht man unter Social Engineering?',
       'option_a': 'Das Programmieren von sozialen Netzwerken',
       'option_b': 'Eine Methode bei der Menschen manipuliert werden um vertrauliche Informationen preiszugeben',
@@ -109,6 +118,7 @@ void main() {
     },
     {
       'category': 'Cybersecurity',
+      'difficulty': 'schwer',
       'question': 'Was ist der Unterschied zwischen symmetrischer und asymmetrischer Verschlüsselung?',
       'option_a': 'Symmetrisch ist sicherer als asymmetrisch',
       'option_b': 'Bei symmetrischer Verschlüsselung gibt es keinen Schlüssel',
@@ -118,26 +128,31 @@ void main() {
       'explanation': 'Bei symmetrischer Verschlüsselung wird ein gemeinsamer Schlüssel verwendet, bei asymmetrischer ein öffentlicher und ein privater Schlüssel.',
     },
   ];
+
   // Aktuelles Datum für created_date Spalte
   final now = DateTime.now().toIso8601String();
 
   // SQL-Statement vorbereiten – wird für jede Frage, Antwortoption und Erklärung wiederverwendet
   final stmt = db.prepare('''
-     INSERT INTO questions (category, question, option_a, option_b, option_c, option_d, correct_answer, explanation, created_date)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+     INSERT INTO questions (category, difficulty, question, option_a, option_b, option_c, option_d, correct_answer, explanation, created_date)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   ''');
 
-  // Jede Frage, Antwortoption und Erklärung einzeln in die Datenbank einfügen
- for (final f in fragen) {
+  // Jede Frage, Antwortoption, Erklärung und Schwierigkeitsgrad einzeln in die Datenbank einfügen
+  for (final f in fragen) {
     stmt.execute([
-      f['category'], f['question'],
+      f['category'], f['difficulty'], f['question'],
       f['option_a'], f['option_b'], f['option_c'], f['option_d'],
-      f['correct_answer'], f['explanation'], now, ]);
- }
+      f['correct_answer'], f['explanation'], now,
+    ]);
+  }
+
   // Statement und Datenbank schließen
   stmt.dispose();
   db.dispose();
-  
+
   // Erfolgsmeldung mit Anzahl der eingefügten Fragen
   print('${fragen.length} Cybersecurity Fragen eingefügt!');
 }
+
+
