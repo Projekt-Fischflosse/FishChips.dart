@@ -1,0 +1,156 @@
+import 'package:sqlite3/sqlite3.dart';
+
+void main() {
+  // Bestehende Datenbank öffnen
+  final db = sqlite3.open('fish_and_chips.db');
+
+  // 10 Fragen für Grundlagen Fachinformatik definieren
+  final fragen = [
+    {
+      // Kategorie für spätere Filterung
+      'category': 'Grundlagen Fachinformatik',
+
+      // Schwierigkeitsgrad
+      'difficulty': 'leicht',
+
+      // Frage
+      'question': 'Was ist der Unterschied zwischen Hardware und Software?',
+
+      // Antwortoptionen
+      'option_a': 'Hardware ist teurer als Software',
+      'option_b': 'Hardware sind physische Komponenten, Software sind Programme und Daten',
+      'option_c': 'Software kann man anfassen, Hardware nicht',
+      'option_d': 'Es gibt keinen Unterschied, beide Begriffe bedeuten dasselbe',
+
+      // Richtige Antwort
+      'correct_answer': 'B',
+
+      // Erklärung
+      'explanation': 'Hardware bezeichnet alle physisch greifbaren Komponenten eines Computers (z.B. CPU, RAM), während Software Programme, Betriebssysteme und Daten umfasst.',
+    },
+    {
+      'category': 'Grundlagen Fachinformatik',
+      'difficulty': 'leicht',
+      'question': 'Welche Einheit beschreibt die Verarbeitungsgeschwindigkeit einer CPU?',
+      'option_a': 'Byte',
+      'option_b': 'Ampere',
+      'option_c': 'Hertz (Hz)',
+      'option_d': 'Pixel',
+      'correct_answer': 'C',
+      'explanation': 'Die Taktfrequenz einer CPU wird in Hertz (Hz) gemessen. Moderne Prozessoren arbeiten im Gigahertz-Bereich (GHz), also Milliarden Taktzyklen pro Sekunde.',
+    },
+    {
+      'category': 'Grundlagen Fachinformatik',
+      'difficulty': 'mittel',
+      'question': 'Was ist der Unterschied zwischen RAM und ROM?',
+      'option_a': 'RAM ist permanent, ROM ist flüchtig',
+      'option_b': 'RAM ist flüchtiger Arbeitsspeicher, ROM ist dauerhafter Festwertspeicher',
+      'option_c': 'Beide speichern Daten dauerhaft, nur die Geschwindigkeit unterscheidet sich',
+      'option_d': 'ROM ist schneller als RAM',
+      'correct_answer': 'B',
+      'explanation': 'RAM (Random Access Memory) verliert seinen Inhalt beim Ausschalten. ROM (Read Only Memory) behält seinen Inhalt dauerhaft und wird z.B. für Firmware verwendet.',
+    },
+    {
+      'category': 'Grundlagen Fachinformatik',
+      'difficulty': 'mittel',
+      'question': 'Was versteht man unter dem Binärsystem?',
+      'option_a': 'Ein Zahlensystem mit den Ziffern 0–9',
+      'option_b': 'Ein Zahlensystem mit den Ziffern 0 und 1',
+      'option_c': 'Ein System zur Datenkomprimierung',
+      'option_d': 'Ein Netzwerkprotokoll zur Datenübertragung',
+      'correct_answer': 'B',
+      'explanation': 'Das Binärsystem (Basis 2) verwendet nur die Ziffern 0 und 1. Computer arbeiten intern mit diesem System, da elektronische Bauteile zwei Zustände (an/aus) unterscheiden können.',
+    },
+    {
+      'category': 'Grundlagen Fachinformatik',
+      'difficulty': 'leicht',
+      'question': 'Was ist ein Betriebssystem?',
+      'option_a': 'Ein Programm zum Bearbeiten von Texten',
+      'option_b': 'Eine Hardware-Komponente zur Steuerung der CPU',
+      'option_c': 'Eine Software die Hardware verwaltet und als Schnittstelle zwischen Nutzer und Hardware dient',
+      'option_d': 'Ein Antivirenprogramm das den Computer schützt',
+      'correct_answer': 'C',
+      'explanation': 'Ein Betriebssystem (z.B. Windows, Linux, macOS) verwaltet Hardware-Ressourcen und stellt Anwendungen eine einheitliche Schnittstelle zur Verfügung.',
+    },
+    {
+      'category': 'Grundlagen Fachinformatik',
+      'difficulty': 'leicht',
+      'question': 'Was bedeutet die Abkürzung IP in IP-Adresse?',
+      'option_a': 'Internal Processor',
+      'option_b': 'Internet Protocol',
+      'option_c': 'Integrated Program',
+      'option_d': 'Input Port',
+      'correct_answer': 'B',
+      'explanation': 'IP steht für Internet Protocol. Eine IP-Adresse ist eine eindeutige Adresse, die ein Gerät in einem Netzwerk identifiziert (z.B. 192.168.1.1).',
+    },
+    {
+      'category': 'Grundlagen Fachinformatik',
+      'difficulty': 'mittel',
+      'question': 'Was ist der Unterschied zwischen einem Client und einem Server?',
+      'option_a': 'Ein Server ist ein älterer Computer, ein Client ist ein neuerer',
+      'option_b': 'Ein Client fordert Dienste an, ein Server stellt diese Dienste bereit',
+      'option_c': 'Beide sind gleich, nur der Standort unterscheidet sich',
+      'option_d': 'Ein Client hat mehr Speicher als ein Server',
+      'correct_answer': 'B',
+      'explanation': 'Im Client-Server-Modell stellt der Client Anfragen (z.B. Browser lädt Website) und der Server bearbeitet diese Anfragen und liefert die Antwort.',
+    },
+    {
+      'category': 'Grundlagen Fachinformatik',
+      'difficulty': 'mittel',
+      'question': 'Was ist ein Algorithmus?',
+      'option_a': 'Ein Computerprogramm zum Lösen mathematischer Gleichungen',
+      'option_b': 'Eine Programmiersprache für künstliche Intelligenz',
+      'option_c': 'Eine eindeutige Schritt-für-Schritt-Anleitung zur Lösung eines Problems',
+      'option_d': 'Ein Sicherheitsprotokoll für Netzwerke',
+      'correct_answer': 'C',
+      'explanation': 'Ein Algorithmus ist eine endliche Folge von eindeutigen Anweisungen, die ein Problem lösen oder eine Aufgabe ausführen. Beispiel: Kochrezept oder Wegbeschreibung.',
+    },
+    {
+      'category': 'Grundlagen Fachinformatik',
+      'difficulty': 'leicht',
+      'question': 'Was beschreibt der Begriff "Bit"?',
+      'option_a': 'Die kleinste Speichereinheit mit dem Wert 0 oder 1',
+      'option_b': 'Eine Einheit für die Übertragungsgeschwindigkeit',
+      'option_c': 'Eine Einheit für die Bildschirmauflösung',
+      'option_d': 'Eine Maßeinheit für die CPU-Leistung',
+      'correct_answer': 'A',
+      'explanation': 'Ein Bit (Binary Digit) ist die kleinste Informationseinheit in der Informatik und kann den Wert 0 oder 1 annehmen. 8 Bits ergeben 1 Byte.',
+    },
+    {
+      'category': 'Grundlagen Fachinformatik',
+      'difficulty': 'schwer',
+      'question': 'Was ist der Unterschied zwischen Compiler und Interpreter?',
+      'option_a': 'Ein Compiler ist schneller beim Schreiben von Code',
+      'option_b': 'Ein Compiler übersetzt den gesamten Quellcode vor der Ausführung, ein Interpreter übersetzt und führt Zeile für Zeile aus',
+      'option_c': 'Ein Interpreter erzeugt eine EXE-Datei, ein Compiler nicht',
+      'option_d': 'Beide machen dasselbe, nur für verschiedene Betriebssysteme',
+      'correct_answer': 'B',
+      'explanation': 'Ein Compiler übersetzt den kompletten Quellcode in Maschinencode (z.B. C++). Ein Interpreter liest und führt den Code direkt Zeile für Zeile aus (z.B. Python).',
+    },
+  ];
+
+  // Aktuelles Datum für created_date Spalte
+  final now = DateTime.now().toIso8601String();
+
+  // SQL-Statement vorbereiten – wird für jede Frage, Antwortoption und Erklärung wiederverwendet
+  final stmt = db.prepare('''
+     INSERT INTO questions (category, difficulty, question, option_a, option_b, option_c, option_d, correct_answer, explanation, created_date)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  ''');
+
+  // Jede Frage, Antwortoption,Erklärung einzeln in die Datenbank einfügen
+  for (final f in fragen) {
+    stmt.execute([
+      f['category'], f['difficulty'], f['question'],
+      f['option_a'], f['option_b'], f['option_c'], f['option_d'],
+      f['correct_answer'], f['explanation'], now,
+    ]);
+  }
+
+  // Statement und Datenbank schließen
+  stmt.dispose();
+  db.dispose();
+
+  // Erfolgsmeldung mit Anzahl der eingefügten Fragen
+  print('${fragen.length} Grundlagen Fachinformatik Fragen eingefügt!');
+}

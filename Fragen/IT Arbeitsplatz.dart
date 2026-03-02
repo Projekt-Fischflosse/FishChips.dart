@@ -42,7 +42,7 @@ void main() {
     {
       'category': 'IT Arbeitsplatz',
       'difficulty': 'mittel',
-      'question': 'Was regelt die Bildschirmarbeitsverordnung (BildscharbV) in Deutschland?',
+      'question': 'Was regelt die Bildschirmarbeitsverordnung in Deutschland?',
       'option_a': 'Die maximale Bildschirmgröße am Arbeitsplatz',
       'option_b': 'Mindestanforderungen an Sicherheit und Gesundheitsschutz bei der Arbeit an Bildschirmgeräten',
       'option_c': 'Die erlaubten Bildschirmmodelle in Unternehmen',

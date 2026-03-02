@@ -1,0 +1,156 @@
+import 'package:sqlite3/sqlite3.dart';
+
+void main() {
+  // Bestehende Datenbank öffnen
+  final db = sqlite3.open('fish_and_chips.db');
+
+  // 10 Fragen für Computergenerationen definieren
+  final fragen = [
+    {
+      // Kategorie für spätere Filterung
+      'category': 'Computergenerationen',
+
+      // Schwierigkeitsgrad
+      'difficulty': 'leicht',
+
+      // Frage
+      'question': 'Welche Technologie dominierte die 1. Computergeneration?',
+
+      // Antwortoptionen
+      'option_a': 'Transistoren',
+      'option_b': 'Vakuumröhren',
+      'option_c': 'Integrierte Schaltkreise',
+      'option_d': 'Mikroprozessoren',
+
+      // Richtige Antwort
+      'correct_answer': 'B',
+
+      // Erklärung
+      'explanation': 'Die 1. Computergeneration (1940–1956) verwendete Vakuumröhren als Schaltkreise. Diese waren groß, teuer und sehr störanfällig.',
+    },
+    {
+      'category': 'Computergenerationen',
+      'difficulty': 'leicht',
+      'question': 'Was war ein typisches Problem der 1. Computergeneration?',
+      'option_a': 'Zu wenig Rechenleistung für einfache Aufgaben',
+      'option_b': 'Fehlende Programmiersprachen',
+      'option_c': 'Enorme Wärmeentwicklung und häufige Ausfälle der Vakuumröhren',
+      'option_d': 'Keine Möglichkeit zur Dateneingabe',
+      'correct_answer': 'C',
+      'explanation': 'Vakuumröhren erzeugten sehr viel Wärme und fielen häufig aus. Computer wie der ENIAC füllten ganze Räume und verbrauchten enorme Mengen Strom.',
+    },
+    {
+      'category': 'Computergenerationen',
+      'difficulty': 'leicht',
+      'question': 'Welche Technologie kennzeichnet die 2. Computergeneration?',
+      'option_a': 'Vakuumröhren',
+      'option_b': 'Mikroprozessoren',
+      'option_c': 'Transistoren',
+      'option_d': 'Quantencomputer',
+      'correct_answer': 'C',
+      'explanation': 'Die 2. Generation (1956–1963) ersetzte Vakuumröhren durch Transistoren. Diese waren kleiner, schneller, günstiger und erzeugten weniger Wärme.',
+    },
+    {
+      'category': 'Computergenerationen',
+      'difficulty': 'leicht',
+      'question': 'Warum waren Computer der 2. Generation besser als die der 1. Generation?',
+      'option_a': 'Sie hatten grafische Benutzeroberflächen',
+      'option_b': 'Sie waren kleiner, schneller und zuverlässiger durch Transistoren',
+      'option_c': 'Sie konnten mit dem Internet verbunden werden',
+      'option_d': 'Sie verwendeten bereits KI-Algorithmen',
+      'correct_answer': 'B',
+      'explanation': 'Transistoren waren zuverlässiger und effizienter als Vakuumröhren. Dadurch wurden Computer der 2. Generation deutlich kleiner, schneller und energiesparender.',
+    },
+    {
+      'category': 'Computergenerationen',
+      'difficulty': 'mittel',
+      'question': 'Was prägte die 3. Computergeneration?',
+      'option_a': 'Die Einführung des Internets',
+      'option_b': 'Der Einsatz von Integrierte Schaltkreise (ICs)',
+      'option_c': 'Die Entwicklung von Quantencomputern',
+      'option_d': 'Die Erfindung der Festplatte',
+      'correct_answer': 'B',
+      'explanation': 'Die 3. Generation (1964–1971) nutzte integrierte Schaltkreise (ICs), auf denen viele Transistoren auf einem kleinen Chip untergebracht wurden.',
+    },
+    {
+      'category': 'Computergenerationen',
+      'difficulty': 'mittel',
+      'question': 'Was ist eine integrierte Schaltung (IC)?',
+      'option_a': 'Ein einzelner Transistor auf einem Siliziumplättchen',
+      'option_b': 'Ein Netzwerkchip für die Internetverbindung',
+      'option_c': 'Mehrere elektronische Bauteile (z.B. Transistoren) auf einem einzigen Chip',
+      'option_d': 'Ein Speichermodul für RAM',
+      'correct_answer': 'C',
+      'explanation': 'Ein IC (Integrated Circuit) ist ein Mikrochip, auf dem viele elektronische Bauteile wie Transistoren, Widerstände und Kondensatoren miniaturisiert zusammengefasst sind.',
+    },
+    {
+      'category': 'Computergenerationen',
+      'difficulty': 'mittel',
+      'question': 'Welche Innovation definierte die 4. Computergeneration?',
+      'option_a': 'Transistoren',
+      'option_b': 'Vakuumröhren',
+      'option_c': 'Künstliche Intelligenz',
+      'option_d': 'Der Mikroprozessor',
+      'correct_answer': 'D',
+      'explanation': 'Die 4. Generation (ab 1971) wurde durch den Mikroprozessor definiert, der alle CPU-Funktionen auf einem einzigen Chip vereint. Intel 4004 war der erste kommerziell verfügbare Mikroprozessor.',
+    },
+    {
+      'category': 'Computergenerationen',
+      'difficulty': 'leicht',
+assentauglich?',
+      'option_a': 'Quantencomputer',
+      'option_b': 'Mainframe-Computer für Großunternehmen',
+      'option_c': 'Personal Computer (PC)',
+      'option_d': 'Sprachgesteuerte KI-Systeme',
+      'correct_answer': 'C',
+      'explanation': 'Durch Mikroprozessoren wurden Computer klein und günstig genug für den Heimbereich. Personal Computer wie der Apple II und IBM PC machten Computer für die Masse zugänglich.',
+    },
+    {
+      'category': 'Computergenerationen',
+      'difficulty': 'schwer',
+      'question': 'Was ist typisch für die 5. Computergeneration?',
+      'option_a': 'Verwendung von Transistoren statt Röhren',
+      'option_b': 'Einsatz von KI, maschinellem Lernen und Parallelverarbeitung',
+      'option_c': 'Einführung des ersten Betriebssystems',
+      'option_d': 'Miniaturisierung durch integrierte Schaltkreise',
+      'correct_answer': 'B',
+      'explanation': 'Die 5. Generation (ab ca. 1980 bis heute) ist geprägt von Künstlicher Intelligenz, maschinellem Lernen, Spracherkennung und massiver Parallelverarbeitung.',
+    },
+    {
+      'category': 'Computergenerationen',
+      'difficulty': 'mittel',
+      'question': 'Welche Reihenfolge der Computergenerationen ist korrekt?',
+      'option_a': 'Transistoren → Vakuumröhren → ICs → Mikroprozessoren → KI',
+      'option_b': 'ICs → Transistoren → Vakuumröhren → Mikroprozessoren → KI',
+      'option_c': 'Vakuumröhren → Transistoren → ICs → Mikroprozessoren → KI',
+      'option_d': 'Mikroprozessoren → ICs → Transistoren → Vakuumröhren → KI',
+      'correct_answer': 'C',
+      'explanation': 'Die korrekte Reihenfolge: 1. Vakuumröhren → 2. Transistoren → 3. Integrierte Schaltkreise → 4. Mikroprozessoren → 5. KI & Parallelverarbeitung.',
+    },
+  ];
+
+  // Aktuelles Datum für created_date Spalte
+  final now = DateTime.now().toIso8601String();
+
+  // SQL-Statement vorbereiten – wird für jede Frage, Antwortoption und Erklärung wiederverwendet
+  final stmt = db.prepare('''
+    INSERT INTO questions (category, difficulty, question, option_a, option_b, option_c, option_d, correct_answer, explanation, created_date)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  ''');
+
+  // Jede Frage, Antwortoption, Erklärung und Schwierigkeitsgrad einzeln in die Datenbank einfügen
+  for (final f in fragen) {
+    stmt.execute([
+      f['category'], f['difficulty'], f['question'],
+      f['option_a'], f['option_b'], f['option_c'], f['option_d'],
+      f['correct_answer'], f['explanation'], now,
+    ]);
+  }
+
+  // Statement und Datenbank schließen
+  stmt.dispose();
+  db.dispose();
+
+  // Erfolgsmeldung mit Anzahl der eingefügten Fragen
+  print('${fragen.length} Computergenerationen Fragen eingefügt!');
+}
