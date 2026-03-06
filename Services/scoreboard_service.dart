@@ -44,4 +44,19 @@ class ScoreboardService {
       },
     );
   }
+  Future<void> scoreEintragen(String kategorie, int richtig, int falsch) async {
+    final db = await database;
+    await db.insert('quiz_results', {
+      'datum': DateTime.now().toIso8601String(),
+      'kategorie': kategorie,
+      'richtig': richtig,
+      'falsch': falsch,
+      'score': richtig,
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> alleErgebnisse() async {
+    final db = await database;
+    return await db.query('quiz_results', orderBy: 'datum DESC');
+  }
 }
