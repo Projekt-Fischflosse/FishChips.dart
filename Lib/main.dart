@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'db_stub.dart' if (dart.library.io) 'db_native.dart';
+import 'package:fish_chips/Screens/home.dart';
 
 void main() {
   initializeDatabase();
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const QuestionsPage(),
+      home: const HomeScreen(),
     );
   }
 }

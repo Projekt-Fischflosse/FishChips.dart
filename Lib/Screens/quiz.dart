@@ -96,17 +96,17 @@ class _QuizScreenState extends State<QuizScreen> {
 
     // 1 Sekunde warten, dann nächste Frage laden
     Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        // ist das die letzte Frage?
-        if (_aktuelleFrageIndex < widget.fragen.length - 1) {
-          // nein = nächste Frage
+      // ist das die letzte Frage?
+      if (_aktuelleFrageIndex < widget.fragen.length - 1) {
+        // nein = nächste Frage
+        setState(() {
           _aktuelleFrageIndex++;
           _geantwortet = false;
-        } else {
-          // ja = Quiz beendet, Ergebnis-Screen öffnen
-          _quizBeendet();
-        }
-      });
+        });
+      } else {
+        // ja = Quiz beendet, Ergebnis-Screen öffnen (ausserhalb von setState)
+        _quizBeendet();
+      }
     });
   }
 
