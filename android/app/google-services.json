@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1048935741394",
+    "project_id": "fischflosse-9ebcf",
+    "storage_bucket": "fischflosse-9ebcf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1048935741394:android:acb338abb0636342763a0b",
+        "android_client_info": {
+          "package_name": "com.example.fish_chips"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1048935741394-0n8920tpdld64snsjcuh5dpdec1s8aiv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4AWOQ0fsNPkEBS-2Zn0PS9mnqDNFLeFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1048935741394-0n8920tpdld64snsjcuh5dpdec1s8aiv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1048935741394-r4adc6t8lda5kmeremngr3o6jlkak634.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fishChips"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
