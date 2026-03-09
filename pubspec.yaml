@@ -9,11 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   cupertino_icons: ^1.0.8
+  shared_preferences: ^2.2.3
   sqlite3: ^2.9.4
-  sqflite: ^2.4.1
-  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:
@@ -22,3 +20,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/data/questions.json
+    - assets/data/users.json

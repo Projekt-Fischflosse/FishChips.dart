@@ -1,52 +1,70 @@
 import 'package:flutter/material.dart';
-import 'db_stub.dart' if (dart.library.io) 'db_native.dart';
 
-void main() {
-  initializeDatabase();
-  runApp(const MyApp());
+import 'Services/auth_service.dart';
+import 'Services/user_repository.dart';
+
+import 'ui/screens/login_screen.dart';
+import 'ui/screens/admin_screen.dart';
+import 'ui/screens/user_screen.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 1) Repo + Service zentral erstellen
+  final userRepo = UserRepository();
+  await userRepo.init();
+
+  // 2) Auth mit positional ctor (wichtig!)
+  final auth = AuthService(userRepo);
+  await auth.restoreSession();
+
+  runApp(App(userRepo: userRepo, auth: auth));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  final UserRepository userRepo;
+  final AuthService auth;
+
+  const App({
+    super.key,
+    required this.userRepo,
+    required this.auth,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fish & Chips App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const QuestionsPage(),
+      debugShowCheckedModeBanner: false,
+      title: 'Fish&Chips',
+      home: _StartGate(userRepo: userRepo, auth: auth),
     );
   }
 }
 
-class QuestionsPage extends StatelessWidget {
-  const QuestionsPage({super.key});
+/// Entscheidet beim Start:
+/// - wenn Session vorhanden: AdminScreen oder UserScreen
+/// - sonst: LoginScreen
+class _StartGate extends StatelessWidget {
+  final UserRepository userRepo;
+  final AuthService auth;
+
+  const _StartGate({
+    required this.userRepo,
+    required this.auth,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Fragen-Tabelle'),
-      ),
-      body: SingleChildScrollView(
-        child: DataTable(
-          columns: const [
-            DataColumn(label: Text('Kategorie')),
-            DataColumn(label: Text('Frage')),
-          ],
-          rows: questions
-              .map(
-                (q) => DataRow(cells: [
-                  DataCell(Text(q['category'] ?? '')),
-                  DataCell(Text(q['question'] ?? '')),
-                ]),
-              )
-              .toList(),
-        ),
-      ),
-    );
+    final u = auth.currentUser;
+
+    if (u == null) {
+      return LoginScreen(userRepo: userRepo, auth: auth);
+    }
+
+    if (u.role == 'admin') {
+      return AdminScreen(userRepo: userRepo, auth: auth);
+    }
+
+    return UserScreen(userRepo: userRepo, auth: auth);
   }
 }

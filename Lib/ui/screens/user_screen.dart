@@ -7,16 +7,14 @@ import '../../theme/widgets/app_scaffold.dart';
 import '../../theme/widgets/app_card.dart';
 import '../../theme/widgets/primary_button.dart';
 
-import 'admin_screen.dart';
-import 'user_screen.dart';
 import 'quiz_screen.dart';
 import 'login_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class UserScreen extends StatelessWidget {
   final UserRepository userRepo;
   final AuthService auth;
 
-  const HomeScreen({
+  const UserScreen({
     super.key,
     required this.userRepo,
     required this.auth,
@@ -26,10 +24,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = auth.currentUser;
     final displayName = user?.toString() ?? '—';
-    final role = user == null ? 'guest' : user.role.toString();
 
     return AppScaffold(
-      title: 'Fish&Chips',
+      title: 'Benutzer',
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -38,10 +35,12 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Home', style: Theme.of(context).textTheme.titleLarge),
+                  Text('Willkommen!',
+                      style: Theme.of(context).textTheme.titleLarge),
                   const SizedBox(height: 8),
-                  Text('User: $displayName'),
-                  Text('Rolle: $role'),
+                  Text(user == null
+                      ? 'Nicht eingeloggt'
+                      : 'Eingeloggt als: $displayName'),
                 ],
               ),
             ),
@@ -53,20 +52,6 @@ class HomeScreen extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => QuizScreen(userRepo: userRepo, auth: auth),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 10),
-
-            PrimaryButton(
-              label: role == 'admin' ? 'Admin Bereich' : 'User Bereich',
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => role == 'admin'
-                        ? AdminScreen(userRepo: userRepo, auth: auth)
-                        : UserScreen(userRepo: userRepo, auth: auth),
                   ),
                 );
               },
