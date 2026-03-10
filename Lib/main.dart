@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'db_stub.dart' if (dart.library.io) 'db_native.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:fish_chips/Screens/home.dart';
+import 'firebase_options.dart';
 
-void main() {
-  initializeDatabase();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -18,36 +21,6 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: const HomeScreen(),
-    );
-  }
-}
-
-class QuestionsPage extends StatelessWidget {
-  const QuestionsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Fragen-Tabelle'),
-      ),
-      body: SingleChildScrollView(
-        child: DataTable(
-          columns: const [
-            DataColumn(label: Text('Kategorie')),
-            DataColumn(label: Text('Frage')),
-          ],
-          rows: questions
-              .map(
-                (q) => DataRow(cells: [
-                  DataCell(Text(q['category'] ?? '')),
-                  DataCell(Text(q['question'] ?? '')),
-                ]),
-              )
-              .toList(),
-        ),
-      ),
     );
   }
 }

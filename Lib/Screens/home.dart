@@ -1,55 +1,77 @@
-// Importiert Flutter Material
 import 'package:flutter/material.dart';
-// Importiert den QuizScreen um ihn aufrufen zu können
-import 'quiz.dart';
+import 'package:fish_chips/Screens/quiz.dart';
+import 'package:fish_chips/Services/fragen_service.dart';
 
-// StatelessWidget = diese Seite verändert sich nicht
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final FragenService _fragenService = FragenService();
+
+  static const List<String> _kategorien = [
+    'Computergenerationen',
+    'Cybersecurity',
+    'Datenbankgrundlagen',
+    'Grundlagen Fachinformatik',
+    'IT Arbeitsplatz',
+    'Netzwerktechnik',
+    'PQSM',
+    'Python Programmierung',
+    'Wirtschafts- und Geschäftsprozesse',
+  ];
+
+  void _startQuiz(String kategorie) {
+    final fragen = _fragenService.fragenLaden(kategorie);
+    if (fragen.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Keine Fragen für $kategorie gefunden.')),
+      );
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuizScreen(
+          kategorie: kategorie,
+          fragen: fragen,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Titel der App
         title: const Text('Fish & Chips Quiz'),
       ),
       body: Center(
-        // Column ordnet alles untereinander an
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // App-Titel
-            const Text(
-              'Willkommen!',
-              style: TextStyle(fontSize: 28),
-            ),
-            const SizedBox(height: 40),
-            // Button für jede Kategorie
-            ElevatedButton(
-              // navigiert zum QuizScreen und gibt Kategorie + leere Fragenliste mit
-              // TODO: Navigation zum Quiz
-              onPressed: () {
-                //navigiert zum quiz screen
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => QuizScreen(
-                      kategorie:'Allgemein',
-                      fragen: const []
-                    ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Wähle eine Kategorie:',
+                style: TextStyle(fontSize: 24),
+              ),
+              const SizedBox(height: 24),
+              ..._kategorien.map((kat) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => _startQuiz(kat),
+                    child: Text(kat),
                   ),
-                );
-              },
-              child: const Text('Quiz starten'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              // TODO: Einstellungen / Scores
-              onPressed: () {},
-              child: const Text('Meine Scores'),
-            ),
-          ],
+                ),
+              )),
+            ],
+          ),
         ),
       ),
     );

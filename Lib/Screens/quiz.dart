@@ -37,6 +37,12 @@ class _QuizScreenState extends State<QuizScreen> {
   //build = baut die UI, wird jedes Mal neu aufgerufen wenn setState() ausgeführt wird
   @override
   Widget build(BuildContext context) {
+    if (widget.fragen.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: Text(widget.kategorie)),
+        body: const Center(child: Text('Keine Fragen gefunden.')),
+      );
+    }
     return Scaffold(
       //AppBar oben mit dem Kategorienamen
       appBar: AppBar(
