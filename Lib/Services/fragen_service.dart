@@ -44,6 +44,7 @@ class FragenService {
             'frage': f['question'] ?? '',
             'antworten': antworten,
             'richtige_antwort': richtigeAntwort,
+            'explanation': f['explanation'] ?? '',
           };
         })
         .toList();

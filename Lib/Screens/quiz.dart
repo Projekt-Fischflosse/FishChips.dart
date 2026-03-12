@@ -69,19 +69,43 @@ class _QuizScreenState extends State<QuizScreen> {
             // map() = geht durch jede Antwort und erstellt einen Button dafür
             // ... (spread operator) = fügt alle Buttons in die children Liste ein
             ...(_aktuelleFrage['antworten'] as List).map((antwort) {
-              // für jede Antwort wird ein Padding + Button erstellt
               return Padding(
-                // Abstand nach unten zwischen den Buttons
                 padding: const EdgeInsets.only(bottom: 10),
                 child: ElevatedButton(
-                  // falls _geantwortet = true, ist onPressed null = Button deaktiviert
-                  // falls _geantwortet = false, wird _antwortPruefen aufgerufen
                   onPressed: _geantwortet ? null : () => _antwortPruefen(antwort),
-                  // zeigt den Antworttext auf dem Button an
                   child: Text(antwort),
                 ),
               );
             }),
+            if (_geantwortet && (_aktuelleFrage['explanation'] ?? '').isNotEmpty)
+              Container(
+                margin: const EdgeInsets.only(top: 16),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.orange.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.orange),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Erklärung', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange)),
+                    const SizedBox(height: 6),
+                    Text(_aktuelleFrage['explanation'] ?? ''),
+                  ],
+                ),
+              ),
+            if (_geantwortet)
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _naechsteFrage,
+                    child: Text(_aktuelleFrageIndex < widget.fragen.length - 1 ? 'Nächste Frage' : 'Ergebnis anzeigen'),
+                  ),
+                ),
+              ),
             ],
         ),
       ),
@@ -89,31 +113,23 @@ class _QuizScreenState extends State<QuizScreen> {
   }
    // wird aufgerufen wenn der User einen Antwort-Button drückt
   void _antwortPruefen(String gewaehlteAntwort) {
-    // setState = sagt Flutter dass sich etwas geändert hat, UI neu aufbauen
     setState(() {
-      // verhindert dass nochmal geklickt werden kann
       _geantwortet = true;
-      // vergleicht die gewählte Antwort mit der richtigen Antwort aus der DB
       if (gewaehlteAntwort == _aktuelleFrage['richtige_antwort']) {
-        // richtig = Score um 1 erhöhen
         _richtig++;
       }
     });
+  }
 
-    // 1 Sekunde warten, dann nächste Frage laden
-    Future.delayed(const Duration(seconds: 1), () {
-      // ist das die letzte Frage?
-      if (_aktuelleFrageIndex < widget.fragen.length - 1) {
-        // nein = nächste Frage
-        setState(() {
-          _aktuelleFrageIndex++;
-          _geantwortet = false;
-        });
-      } else {
-        // ja = Quiz beendet, Ergebnis-Screen öffnen (ausserhalb von setState)
-        _quizBeendet();
-      }
-    });
+  void _naechsteFrage() {
+    if (_aktuelleFrageIndex < widget.fragen.length - 1) {
+      setState(() {
+        _aktuelleFrageIndex++;
+        _geantwortet = false;
+      });
+    } else {
+      _quizBeendet();
+    }
   }
 
   // wird aufgerufen wenn alle Fragen beantwortet wurden
