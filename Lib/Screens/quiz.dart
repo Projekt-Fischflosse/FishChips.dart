@@ -1,40 +1,28 @@
-//importiert Flutter zeug - gibt uns alle UI Elemente (Buttons, Text undso)
 import 'package:flutter/material.dart';
 import 'ergebnis.dart';
 
-//statefulWidget = die Seite kann sich verändern (z.B. nächste Frage laden)
 class QuizScreen extends StatefulWidget {
-  //kategorie = welches Thema wurde ausgewählt
   final String kategorie;
-  //fragen = die Liste aller Fragen die wir anzeigen wollen
   final List<Map<String, dynamic>> fragen;
 
-  //Konstruktor - diese Werte müssen beim Aufrufen mitgegeben werden
   const QuizScreen({
     super.key,
-    required this.kategorie, // Pflichtfeld
-    required this.fragen,    // Pflichtfeld
+    required this.kategorie,
+    required this.fragen,
   });
 
-  //verbindet das Widget mit seinem State
   @override
   State<QuizScreen> createState() => _QuizScreenState();
 }
 
-//hier passiert die ganze Logik (aktuelle Frage, Score zählen etc.)
 class _QuizScreenState extends State<QuizScreen> {
-   //aktuelle Fragenummer (startet bei 0)
   int _aktuelleFrageIndex = 0;
-  //zählt wie viele Antworten richtig waren
   int _richtig = 0;
-  //wurde eine Antwort ausgewählt? (verhindert doppeltes Klicken)
   bool _geantwortet = false;
+  String? _letzteAntwort;
 
-  //gibt die aktuelle Frage zurück aus der Fragenliste
-  //widget.fragen = greift auf die Fragen zu die wir beim Aufrufen mitgegeben haben
   Map<String, dynamic> get _aktuelleFrage => widget.fragen[_aktuelleFrageIndex];
 
-  //build = baut die UI, wird jedes Mal neu aufgerufen wenn setState() ausgeführt wird
   @override
   Widget build(BuildContext context) {
     if (widget.fragen.isEmpty) {
@@ -44,39 +32,56 @@ class _QuizScreenState extends State<QuizScreen> {
       );
     }
     return Scaffold(
-      //AppBar oben mit dem Kategorienamen
       appBar: AppBar(
         title: Text(widget.kategorie),
       ),
-      //Padding = Abstand vom Rand
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        //column = ordnet alles untereinander an
         child: Column(
           children: [
-            // Fortschritt anzeigen 
-            //_aktuelleFrageIndex + 1 weil Index bei 0 startet
             Text('Frage ${_aktuelleFrageIndex + 1} / ${widget.fragen.length}'),
-            // SizedBox = leerer Abstand zwischen Elementen
             const SizedBox(height: 20),
-            //Die eigentliche Frage aus der db
-            // ?? '' bedeutet: falls null, zeige leeren Text
             Text(
               _aktuelleFrage['frage'] ?? '',
               style: const TextStyle(fontSize: 20),
             ),
-          const SizedBox(height: 30),
-            // map() = geht durch jede Antwort und erstellt einen Button dafür
-            // ... (spread operator) = fügt alle Buttons in die children Liste ein
+            const SizedBox(height: 30),
             ...(_aktuelleFrage['antworten'] as List).map((antwort) {
+              Color? farbe;
+              if (_geantwortet) {
+                if (antwort == _aktuelleFrage['richtige_antwort']) {
+                  farbe = Colors.green;
+                } else if (antwort == _letzteAntwort) {
+                  farbe = Colors.red;
+                }
+              }
               return Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: ElevatedButton(
+                  style: farbe != null
+                      ? ElevatedButton.styleFrom(backgroundColor: farbe, foregroundColor: Colors.white)
+                      : null,
                   onPressed: _geantwortet ? null : () => _antwortPruefen(antwort),
                   child: Text(antwort),
                 ),
               );
             }),
+            if (_geantwortet)
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text(
+                  _aktuelleFrage['richtige_antwort'] == _letzteAntwort
+                      ? 'Richtig!'
+                      : 'Falsch!',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: _aktuelleFrage['richtige_antwort'] == _letzteAntwort
+                        ? Colors.green
+                        : Colors.red,
+                  ),
+                ),
+              ),
             if (_geantwortet && (_aktuelleFrage['explanation'] ?? '').isNotEmpty)
               Container(
                 margin: const EdgeInsets.only(top: 16),
@@ -106,15 +111,16 @@ class _QuizScreenState extends State<QuizScreen> {
                   ),
                 ),
               ),
-            ],
+          ],
         ),
       ),
     );
   }
-   // wird aufgerufen wenn der User einen Antwort-Button drückt
+
   void _antwortPruefen(String gewaehlteAntwort) {
     setState(() {
       _geantwortet = true;
+      _letzteAntwort = gewaehlteAntwort;
       if (gewaehlteAntwort == _aktuelleFrage['richtige_antwort']) {
         _richtig++;
       }
@@ -126,15 +132,14 @@ class _QuizScreenState extends State<QuizScreen> {
       setState(() {
         _aktuelleFrageIndex++;
         _geantwortet = false;
+        _letzteAntwort = null;
       });
     } else {
       _quizBeendet();
     }
   }
 
-  // wird aufgerufen wenn alle Fragen beantwortet wurden
   void _quizBeendet() {
-    // Navigator ersetzt den aktuellen Screen mit dem Ergebnis-Screen
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -145,4 +150,5 @@ class _QuizScreenState extends State<QuizScreen> {
         ),
       ),
     );
-  }}
+  }
+}
