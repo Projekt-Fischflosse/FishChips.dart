@@ -40,10 +40,12 @@ class FragenService {
             'D': f['option_d'],
           }[letter] ?? '';
 
+          antworten.shuffle();
           return <String, dynamic>{
             'frage': f['question'] ?? '',
             'antworten': antworten,
             'richtige_antwort': richtigeAntwort,
+            'explanation': f['explanation'] ?? '',
           };
         })
         .toList();

@@ -13,7 +13,7 @@ class AppTheme {
 
   static ThemeData light() {
     // Erst ein Basis-Scheme erzeugen, dann mit copyWith überschreiben
-    final base = ColotrScheme.fromSeed(seedColor: fishBlue,
+    final base = ColorScheme.fromSeed(seedColor: fishBlue,
     brightness: Brightness.light);
 
     final scheme = base.copyWith(

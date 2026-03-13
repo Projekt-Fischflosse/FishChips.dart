@@ -26,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _startQuiz(String kategorie) {
     final fragen = _fragenService.fragenLaden(kategorie);
+    fragen.shuffle();
     if (fragen.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Keine Fragen für $kategorie gefunden.')),
