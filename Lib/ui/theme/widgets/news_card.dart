@@ -40,7 +40,7 @@ class NewsCard extends StatelessWidget {
                 width: 46,
                 height: 46,
                 decoration: BoxDecoration(
-                  color: accent.withOpacity(0.15),
+                  color: accent.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(icon, color: accent),
@@ -54,7 +54,7 @@ class NewsCard extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(
                       subtitle,
-                      style: tt.bodyMedium?.copyWith(color: AppTheme.text.withOpacity(0.75)),
+                      style: tt.bodyMedium?.copyWith(color: AppTheme.text.withValues(alpha: 0.75)),
                     ),
                   ],
                 ),

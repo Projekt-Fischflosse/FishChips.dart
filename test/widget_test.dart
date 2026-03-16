@@ -8,7 +8,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:fish_chips/main.dart';
+import 'package:fish_chips/Services/user_repository.dart';
+import 'package:fish_chips/Services/auth_service.dart';
+import 'package:fish_chips/ui/screens/login_screen.dart';
 
 void main() {
   testWidgets('App shows LoginScreen', (WidgetTester tester) async {

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../Services/auth_service.dart';
 import '../../Services/user_repository.dart';
 
-import '../../theme/widgets/app_scaffold.dart';
-import '../../theme/widgets/app_card.dart';
-import '../../theme/widgets/primary_button.dart';
+import '../theme/widgets/app_scaffold.dart';
+import '../theme/widgets/app_card.dart';
+import '../theme/widgets/primary_button.dart';
 
 import 'quiz_screen.dart';
 import 'register_screen.dart';
