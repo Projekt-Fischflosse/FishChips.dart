@@ -1,2 +1,4 @@
 .dart_tool/
 fish_and_chips.db
+# Flutter ephemeral folders
+**/flutter/ephemeral/
