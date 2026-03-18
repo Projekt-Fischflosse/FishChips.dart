@@ -1,3 +1,6 @@
+List<String> getMixedAnswers(List<String> originalAnswers) {
+  return List.from(originalAnswers)..shuffle();
+}
 const List<Map<String, String>> fragenGrundlagenFachinformatik = [
   {
     'category': 'Grundlagen Fachinformatik',

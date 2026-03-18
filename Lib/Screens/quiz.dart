@@ -1,6 +1,8 @@
 //importiert Flutter zeug - gibt uns alle UI Elemente (Buttons, Text undso)
 import 'package:flutter/material.dart';
 import 'ergebnis.dart';
+import 'package:fish_chips/services/progress_service.dart';
+import 'package:fish_chips/services/quiz_stats_service.dart';
 
 //statefulWidget = die Seite kann sich verändern (z.B. nächste Frage laden)
 class QuizScreen extends StatefulWidget {
@@ -23,6 +25,9 @@ class QuizScreen extends StatefulWidget {
 
 //hier passiert die ganze Logik (aktuelle Frage, Score zählen etc.)
 class _QuizScreenState extends State<QuizScreen> {
+ 
+  final progressService = ProgressService();
+  final quizStatsService = QuizStatsService(); 
    //aktuelle Fragenummer (startet bei 0)
   int _aktuelleFrageIndex = 0;
   //zählt wie viele Antworten richtig waren
@@ -112,15 +117,19 @@ class _QuizScreenState extends State<QuizScreen> {
     );
   }
    // wird aufgerufen wenn der User einen Antwort-Button drückt
+  
   void _antwortPruefen(String gewaehlteAntwort) {
+    bool isCorrect = gewaehlteAntwort == _aktuelleFrage['richtige_antwort'];
+
+    progressService.updateProgress('testUser', widget.kategorie, isCorrect);
+
     setState(() {
       _geantwortet = true;
-      if (gewaehlteAntwort == _aktuelleFrage['richtige_antwort']) {
+      if (isCorrect) {
         _richtig++;
       }
     });
-  }
-
+  }     
   void _naechsteFrage() {
     if (_aktuelleFrageIndex < widget.fragen.length - 1) {
       setState(() {
@@ -135,6 +144,13 @@ class _QuizScreenState extends State<QuizScreen> {
   // wird aufgerufen wenn alle Fragen beantwortet wurden
   void _quizBeendet() {
     // Navigator ersetzt den aktuellen Screen mit dem Ergebnis-Screen
+    quizStatsService.saveQuizResult(
+      userId: 'testUser',
+      category: widget.kategorie,
+      total: widget.fragen.length,
+      correct: _richtig,
+    );
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -145,4 +161,5 @@ class _QuizScreenState extends State<QuizScreen> {
         ),
       ),
     );
-  }}
+  }
+}
