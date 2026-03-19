@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../Services/auth_service.dart';
 import '../../Services/user_repository.dart';
 
-import '../../theme/widgets/app_scaffold.dart';
-import '../../theme/widgets/app_card.dart';
-import '../../theme/widgets/primary_button.dart';
+import '../theme/widgets/app_scaffold.dart';
+import '../theme/widgets/app_card.dart';
+import '../theme/widgets/primary_button.dart';
 
 import 'admin_screen.dart';
 import 'user_screen.dart';
@@ -16,11 +16,7 @@ class HomeScreen extends StatelessWidget {
   final UserRepository userRepo;
   final AuthService auth;
 
-  const HomeScreen({
-    super.key,
-    required this.userRepo,
-    required this.auth,
-  });
+  const HomeScreen({super.key, required this.userRepo, required this.auth});
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +25,7 @@ class HomeScreen extends StatelessWidget {
     final role = user == null ? 'guest' : user.role.toString();
 
     return AppScaffold(
-      title: 'Fish&Chips',
-      body: Padding(
+      child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [

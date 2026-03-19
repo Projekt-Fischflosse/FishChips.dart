@@ -28,18 +28,31 @@ class AppHeader extends StatelessWidget {
             children: [
               RichText(
                 text: TextSpan(
-                  style: tt.headlineMedium?.copyWith(fontWeight: FontWeight.w900),
+                  style: tt.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w900,
+                  ),
                   children: const [
-                    TextSpan(text: 'Fish', style: TextStyle(color: AppTheme.fishBlue)),
-                    TextSpan(text: '&', style: TextStyle(color: AppTheme.text)),
-                    TextSpan(text: 'Chips', style: TextStyle(color: AppTheme.chipsYellow)),
+                    TextSpan(
+                      text: 'Fish',
+                      style: TextStyle(color: AppTheme.fishBlue),
+                    ),
+                    TextSpan(
+                      text: '&',
+                      style: TextStyle(color: AppTheme.text),
+                    ),
+                    TextSpan(
+                      text: 'Chips',
+                      style: TextStyle(color: AppTheme.chipsYellow),
+                    ),
                   ],
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 'Quiz-App • Fischflosse',
-                style: tt.bodyMedium?.copyWith(color: AppTheme.text.withOpacity(0.75)),
+                style: tt.bodyMedium?.copyWith(
+                  color: AppTheme.text.withValues(alpha: 0.75),
+                ),
               ),
             ],
           ),

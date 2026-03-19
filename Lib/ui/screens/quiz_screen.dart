@@ -6,19 +6,15 @@ import '../../Services/question_repository.dart';
 
 import '../../models/question.dart';
 
-import '../../theme/widgets/app_scaffold.dart';
-import '../../theme/widgets/app_card.dart';
-import '../../theme/widgets/primary_button.dart';
+import '../theme/widgets/app_scaffold.dart';
+import '../theme/widgets/app_card.dart';
+import '../theme/widgets/primary_button.dart';
 
 class QuizScreen extends StatefulWidget {
   final UserRepository userRepo;
   final AuthService auth;
 
-  const QuizScreen({
-    super.key,
-    required this.userRepo,
-    required this.auth,
-  });
+  const QuizScreen({super.key, required this.userRepo, required this.auth});
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();
@@ -26,7 +22,7 @@ class QuizScreen extends StatefulWidget {
 
 class _QuizScreenState extends State<QuizScreen> {
   final _repo = QuestionRepository();
-  late Future<List<Question>> _future;
+  late List<Question> _questions;
 
   int _index = 0;
   int? _selected;
@@ -36,7 +32,7 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
-    _future = _repo.load();
+    _questions = _repo.load();
   }
 
   void _select(int i) {
@@ -89,109 +85,96 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      title: 'Quiz',
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: FutureBuilder<List<Question>>(
-          future: _future,
-          builder: (context, snap) {
-            if (snap.connectionState != ConnectionState.done) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snap.hasError) {
-              return AppCard(child: Text('Fehler: ${snap.error}'));
-            }
+      child: _questions.isEmpty
+          ? AppCard(
+              child: const Text(
+                'Keine Fragen vorhanden.\n'
+                'Aktuell liefert QuestionRepository.load() noch keine Daten.',
+              ),
+            )
+          : (() {
+              final q = _questions[_index];
 
-            final questions = snap.data ?? <Question>[];
-            if (questions.isEmpty) {
-              return AppCard(
-                child: const Text(
-                  'Keine Fragen vorhanden.\n'
-                  'Aktuell liefert QuestionRepository.load() noch keine Daten.',
-                ),
-              );
-            }
-
-            final q = questions[_index];
-
-            return Column(
-              children: [
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Frage ${_index + 1} / ${questions.length}',
-                          style: Theme.of(context).textTheme.titleMedium),
-                      const SizedBox(height: 8),
-                      Text(q.frage,
-                          style: Theme.of(context).textTheme.titleLarge),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                Expanded(
-                  child: ListView.separated(
-                    itemCount: q.antworten.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
-                    itemBuilder: (context, i) {
-                      final selected = _selected == i;
-
-                      Color? bg;
-                      if (_answered) {
-                        if (i == q.richtig) {
-                         bg = Colors.green.withValues(alpha: 0.15);
-                        } else if (selected) {
-                          bg = Colors.red.withValues(alpha: 0.15);
-                        }
-                      } else if (selected) {
-                        bg = Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withValues(alpha: 0.12);
-                      }
-
-                      return InkWell(
-                        onTap: () => _select(i),
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            color: bg,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: selected
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.black12,
-                            ),
-                          ),
-                          child: Text(q.antworten[i]),
+              return Column(
+                children: [
+                  AppCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Frage ${_index + 1} / ${_questions.length}',
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
-                      );
-                    },
+                        const SizedBox(height: 8),
+                        Text(
+                          q.frage,
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 16),
 
-                const SizedBox(height: 12),
+                  Expanded(
+                    child: ListView.separated(
+                      itemCount: q.antworten.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      itemBuilder: (context, i) {
+                        final selected = _selected == i;
 
-                if (!_answered)
-                  PrimaryButton(
-                    label: 'Antwort bestätigen',
-                    onPressed:
-                        _selected == null ? null : () => _confirm(questions),
-                  )
-                else
-                  PrimaryButton(
-                    label: _index == questions.length - 1
-                        ? 'Ergebnis anzeigen'
-                        : 'Nächste Frage',
-                    onPressed: () => _next(questions),
+                        Color? bg;
+                        if (_answered) {
+                          if (i == q.richtig) {
+                            bg = Colors.green.withValues(alpha: 0.15);
+                          } else if (selected) {
+                            bg = Colors.red.withValues(alpha: 0.15);
+                          }
+                        } else if (selected) {
+                          bg = Theme.of(
+                            context,
+                          ).colorScheme.primary.withValues(alpha: 0.12);
+                        }
+
+                        return InkWell(
+                          onTap: () => _select(i),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: bg,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: selected
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.black12,
+                              ),
+                            ),
+                            child: Text(q.antworten[i]),
+                          ),
+                        );
+                      },
+                    ),
                   ),
-              ],
-            );
-          },
-        ),
-      ),
+
+                  const SizedBox(height: 12),
+
+                  if (!_answered)
+                    PrimaryButton(
+                      label: 'Antwort bestätigen',
+                      onPressed: _selected == null
+                          ? null
+                          : () => _confirm(_questions),
+                    )
+                  else
+                    PrimaryButton(
+                      label: _index == _questions.length - 1
+                          ? 'Ergebnis anzeigen'
+                          : 'Nächste Frage',
+                      onPressed: () => _next(_questions),
+                    ),
+                ],
+              );
+            })(),
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../Services/auth_service.dart';
-import '../../../Services/user_repository.dart';
+import '../../Services/auth_service.dart';
+import '../../Services/user_repository.dart';
 
 import '../theme/widgets/app_scaffold.dart';
 import '../theme/widgets/app_card.dart';
@@ -11,11 +11,7 @@ class RegisterScreen extends StatefulWidget {
   final UserRepository userRepo;
   final AuthService auth;
 
-  const RegisterScreen({
-    super.key,
-    required this.userRepo,
-    required this.auth,
-  });
+  const RegisterScreen({super.key, required this.userRepo, required this.auth});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -60,11 +56,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Registrieren', style: Theme.of(context).textTheme.headlineMedium),
+          Text(
+            'Registrieren',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
           const SizedBox(height: 12),
 
           if (_error != null) ...[
-            AppCard(child: Text(_error!, style: const TextStyle(color: Colors.red))),
+            AppCard(
+              child: Text(_error!, style: const TextStyle(color: Colors.red)),
+            ),
             const SizedBox(height: 12),
           ],
 

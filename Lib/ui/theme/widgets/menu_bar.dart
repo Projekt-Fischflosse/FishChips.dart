@@ -27,7 +27,7 @@ class MenuBarTabs extends StatelessWidget {
             Tab(text: 'Über uns', icon: Icon(Icons.info_outline)),
           ],
           labelColor: Colors.white,
-          unselectedLabelColor: AppTheme.text.withOpacity(0.70),
+          unselectedLabelColor: AppTheme.text.withValues(alpha: 0.70),
           indicator: BoxDecoration(
             color: cs.primary,
             borderRadius: BorderRadius.circular(14),

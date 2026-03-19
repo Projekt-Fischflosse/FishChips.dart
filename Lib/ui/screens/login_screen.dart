@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../Services/auth_service.dart';
-import '../../../Services/user_repository.dart';
+import '../../Services/auth_service.dart';
+import '../../Services/user_repository.dart';
 
 import '../theme/widgets/app_scaffold.dart';
 import '../theme/widgets/app_card.dart';
@@ -15,11 +15,7 @@ class LoginScreen extends StatefulWidget {
   final UserRepository userRepo;
   final AuthService auth;
 
-  const LoginScreen({
-    super.key,
-    required this.userRepo,
-    required this.auth,
-  });
+  const LoginScreen({super.key, required this.userRepo, required this.auth});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -56,13 +52,15 @@ class _LoginScreenState extends State<LoginScreen> {
       if (u.role == 'admin') {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (_) => AdminScreen(userRepo: widget.userRepo, auth: widget.auth),
+            builder: (_) =>
+                AdminScreen(userRepo: widget.userRepo, auth: widget.auth),
           ),
         );
       } else {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (_) => UserScreen(userRepo: widget.userRepo, auth: widget.auth),
+            builder: (_) =>
+                UserScreen(userRepo: widget.userRepo, auth: widget.auth),
           ),
         );
       }
@@ -83,7 +81,9 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(height: 12),
 
           if (_error != null) ...[
-            AppCard(child: Text(_error!, style: const TextStyle(color: Colors.red))),
+            AppCard(
+              child: Text(_error!, style: const TextStyle(color: Colors.red)),
+            ),
             const SizedBox(height: 12),
           ],
 
@@ -117,7 +117,10 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (_) => RegisterScreen(userRepo: widget.userRepo, auth: widget.auth),
+                    builder: (_) => RegisterScreen(
+                      userRepo: widget.userRepo,
+                      auth: widget.auth,
+                    ),
                   ),
                 );
               },
