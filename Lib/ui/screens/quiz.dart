@@ -37,6 +37,12 @@ class _QuizScreenState extends State<QuizScreen> {
   //build = baut die UI, wird jedes Mal neu aufgerufen wenn setState() ausgeführt wird
   @override
   Widget build(BuildContext context) {
+    if (widget.fragen.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: Text(widget.kategorie)),
+        body: const Center(child: Text('Keine Fragen gefunden.')),
+      );
+    }
     return Scaffold(
       //AppBar oben mit dem Kategorienamen
       appBar: AppBar(
@@ -96,17 +102,17 @@ class _QuizScreenState extends State<QuizScreen> {
 
     // 1 Sekunde warten, dann nächste Frage laden
     Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        // ist das die letzte Frage?
-        if (_aktuelleFrageIndex < widget.fragen.length - 1) {
-          // nein = nächste Frage
+      // ist das die letzte Frage?
+      if (_aktuelleFrageIndex < widget.fragen.length - 1) {
+        // nein = nächste Frage
+        setState(() {
           _aktuelleFrageIndex++;
           _geantwortet = false;
-        } else {
-          // ja = Quiz beendet, Ergebnis-Screen öffnen
-          _quizBeendet();
-        }
-      });
+        });
+      } else {
+        // ja = Quiz beendet, Ergebnis-Screen öffnen (ausserhalb von setState)
+        _quizBeendet();
+      }
     });
   }
 

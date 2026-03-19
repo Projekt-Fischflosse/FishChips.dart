@@ -1,7 +1,7 @@
 //importiert Flutter Material
 import 'package:flutter/material.dart';
 // Importiert den ScoreboardService um den Score zu speichern
-import '../Services/scoreboard_service.dart';
+import 'package:fish_chips/Services/scoreboard_service.dart';
 
 //statefulWidget weil wir den Score in die DB speichern müssen (async)
 class ErgebnisScreen extends StatefulWidget {
