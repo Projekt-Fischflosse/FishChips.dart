@@ -2,8 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../Services/auth_service.dart';
-import '../../Services/user_repository.dart';
 import '../../Services/question_repository.dart';
 
 import '../../models/question.dart';
@@ -13,14 +11,7 @@ import '../theme/widgets/app_card.dart';
 import '../theme/widgets/primary_button.dart';
 
 class QuizScreen extends StatefulWidget {
-  final UserRepository userRepo;
-  final AuthService auth;
-
-  const QuizScreen({
-    super.key,
-    required this.userRepo,
-    required this.auth,
-  });
+  const QuizScreen({super.key});
 
   @override
   State<QuizScreen> createState() => _QuizScreenState();

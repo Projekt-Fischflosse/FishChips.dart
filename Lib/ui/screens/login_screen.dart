@@ -1,32 +1,22 @@
 import 'package:flutter/material.dart';
 
 import '../../Services/auth_service.dart';
-import '../../Services/user_repository.dart';
-
 import '../theme/widgets/app_scaffold.dart';
 import '../theme/widgets/app_card.dart';
 import '../theme/widgets/primary_button.dart';
 
 import 'register_screen.dart';
-import 'admin_screen.dart';
-import 'user_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  final UserRepository userRepo;
-  final AuthService auth;
-
-  const LoginScreen({
-    super.key,
-    required this.userRepo,
-    required this.auth,
-  });
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _nameCtrl = TextEditingController();
+  final _auth = AuthService();
+  final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
 
   bool _loading = false;
@@ -34,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    _nameCtrl.dispose();
+    _emailCtrl.dispose();
     _passCtrl.dispose();
     super.dispose();
   }
@@ -46,28 +36,10 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final u = await widget.auth.login(
-        name: _nameCtrl.text,
-        password: _passCtrl.text,
-      );
-
-      if (!mounted) return;
-
-      if (u.role == 'admin') {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => AdminScreen(userRepo: widget.userRepo, auth: widget.auth),
-          ),
-        );
-      } else {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => UserScreen(userRepo: widget.userRepo, auth: widget.auth),
-          ),
-        );
-      }
+      final u = await _auth.login(_emailCtrl.text.trim(), _passCtrl.text);
+      if (u == null) throw Exception('Login fehlgeschlagen.');
     } catch (e) {
-      setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
+      if (mounted) setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -91,8 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: [
                 TextField(
-                  controller: _nameCtrl,
-                  decoration: const InputDecoration(labelText: 'Benutzername'),
+                  controller: _emailCtrl,
+                  decoration: const InputDecoration(labelText: 'E-Mail'),
                 ),
                 const SizedBox(height: 10),
                 TextField(
@@ -116,9 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: OutlinedButton(
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => RegisterScreen(userRepo: widget.userRepo, auth: widget.auth),
-                  ),
+                  MaterialPageRoute(builder: (_) => const RegisterScreen()),
                 );
               },
               child: const Text('Registrieren'),

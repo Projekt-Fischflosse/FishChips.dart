@@ -1,35 +1,27 @@
 import 'package:flutter/material.dart';
 
 import '../../Services/auth_service.dart';
-import '../../Services/user_repository.dart';
-
 import '../theme/widgets/app_scaffold.dart';
 import '../theme/widgets/app_card.dart';
 import '../theme/widgets/primary_button.dart';
 
 class RegisterScreen extends StatefulWidget {
-  final UserRepository userRepo;
-  final AuthService auth;
-
-  const RegisterScreen({
-    super.key,
-    required this.userRepo,
-    required this.auth,
-  });
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _nameCtrl = TextEditingController();
+  final _auth = AuthService();
+  final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   bool _loading = false;
   String? _error;
 
   @override
   void dispose() {
-    _nameCtrl.dispose();
+    _emailCtrl.dispose();
     _passCtrl.dispose();
     super.dispose();
   }
@@ -41,14 +33,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      await widget.auth.register(
-        name: _nameCtrl.text,
-        password: _passCtrl.text,
-      );
-      if (!mounted) return;
-      Navigator.of(context).pop();
+      final u = await _auth.register(_emailCtrl.text.trim(), _passCtrl.text);
+      if (u == null) throw Exception('Registrierung fehlgeschlagen.');
+      if (mounted) Navigator.of(context).pop();
     } catch (e) {
-      setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
+      if (mounted) setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -72,8 +61,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               children: [
                 TextField(
-                  controller: _nameCtrl,
-                  decoration: const InputDecoration(labelText: 'Benutzername'),
+                  controller: _emailCtrl,
+                  decoration: const InputDecoration(labelText: 'E-Mail'),
                 ),
                 const SizedBox(height: 10),
                 TextField(

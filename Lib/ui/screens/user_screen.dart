@@ -1,29 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import '../../Services/auth_service.dart';
-import '../../Services/user_repository.dart';
 
 import '../theme/widgets/app_scaffold.dart';
 import '../theme/widgets/app_card.dart';
 import '../theme/widgets/primary_button.dart';
 
 import 'quiz_screen.dart';
-import 'login_screen.dart';
 
 class UserScreen extends StatelessWidget {
-  final UserRepository userRepo;
-  final AuthService auth;
-
-  const UserScreen({
-    super.key,
-    required this.userRepo,
-    required this.auth,
-  });
+  const UserScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final user = auth.currentUser;
-    final displayName = user?.toString() ?? '—';
+    final user = FirebaseAuth.instance.currentUser;
+    final displayName = user?.email ?? '—';
 
     return AppScaffold(
       title: 'Benutzer',
@@ -50,9 +40,7 @@ class UserScreen extends StatelessWidget {
               label: 'Quiz starten',
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => QuizScreen(userRepo: userRepo, auth: auth),
-                  ),
+                  MaterialPageRoute(builder: (_) => const QuizScreen()),
                 );
               },
             ),
@@ -61,15 +49,9 @@ class UserScreen extends StatelessWidget {
             PrimaryButton(
               label: 'Logout',
               onPressed: () async {
-                await auth.logout();
+                await FirebaseAuth.instance.signOut();
                 if (!context.mounted) return;
-
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (_) => LoginScreen(userRepo: userRepo, auth: auth),
-                  ),
-                  (_) => false,
-                );
+                Navigator.of(context).popUntil((route) => route.isFirst);
               },
             ),
           ],
