@@ -11,6 +11,7 @@ import 'admin_screen.dart';
 import 'user_screen.dart';
 import 'quiz_screen.dart';
 import 'login_screen.dart';
+import 'leaderboard_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final UserRepository userRepo;
@@ -53,6 +54,18 @@ class HomeScreen extends StatelessWidget {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (_) => QuizScreen(userRepo: userRepo, auth: auth),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 10),
+
+            PrimaryButton(
+              label: 'Leaderboard',
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const LeaderboardScreen(),
                   ),
                 );
               },

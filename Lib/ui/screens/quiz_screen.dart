@@ -189,6 +189,26 @@ class _QuizScreenState extends State<QuizScreen> {
 
                 const SizedBox(height: 12),
 
+                if (_answered && q.explanation.isNotEmpty)
+                  AppCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Erklärung',
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                color: Colors.orange,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(q.explanation),
+                      ],
+                    ),
+                  ),
+
+                const SizedBox(height: 12),
+
                 if (!_answered)
                   PrimaryButton(
                     label: 'Antwort bestätigen',

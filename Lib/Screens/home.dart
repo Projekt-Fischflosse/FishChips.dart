@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fish_chips/Screens/quiz.dart';
+import 'package:fish_chips/Screens/leaderboard.dart';
 import 'package:fish_chips/Services/fragen_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -59,6 +60,22 @@ class _HomeScreenState extends State<HomeScreen> {
               const Text(
                 'Wähle eine Kategorie:',
                 style: TextStyle(fontSize: 24),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LeaderboardScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.emoji_events),
+                  label: const Text('Leaderboard'),
+                ),
               ),
               const SizedBox(height: 24),
               ..._kategorien.map((kat) => Padding(

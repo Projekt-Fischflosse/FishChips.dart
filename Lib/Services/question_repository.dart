@@ -34,6 +34,7 @@ class QuestionRepository {
           f['option_d'] ?? '',
         ],
         richtig: _correctIndex(f['correct_answer']),
+        explanation: f['explanation'] ?? '',
       );
     }).toList();
   }
