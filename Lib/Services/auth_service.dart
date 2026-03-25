@@ -1,77 +1,44 @@
-import '../models/app_user.dart';
-import 'local_store.dart';
-import 'user_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-  final UserRepository _repo;
+  // Firebase Auth instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  AppUser? _current;
-  AppUser? get currentUser => _current;
-
-  AuthService(this._repo);
-
-  Future<void> restoreSession() async {
-    final name = await LocalStore.loadSessionUserName();
-    if (name == null) return;
-    _current = _repo.findByName(name);
+  // 1. Sign In with Email and Password
+  Future<User?> login(String email, String password) async {
+    try {
+      UserCredential result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      return result.user;
+    } catch (e) {
+      print("Login Error: ${e.toString()}");
+      return null;
+    }
   }
 
-  Future<AppUser> login({
-    required String name,
-    required String password,
-  }) async {
-    final u = _repo.findByName(name);
-    if (u == null) {
-      throw Exception('Benutzer nicht gefunden.');
+  // 2. Register with Email and Password
+  Future<User?> register(String email, String password) async {
+    try {
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      return result.user;
+    } catch (e) {
+      print("Registration Error: ${e.toString()}");
+      return null;
     }
-    if (u.password != password) {
-      throw Exception('Falsches Passwort.');
-    }
-
-    u.logins.add(DateTime.now().toIso8601String());
-    await _repo.persist();
-
-    _current = u;
-    await LocalStore.saveSessionUserName(u.name);
-    return u;
   }
 
-  Future<AppUser> register({
-    required String name,
-    required String password,
-  }) async {
-    if (name.trim().isEmpty || password.trim().isEmpty) {
-      throw Exception('Name und Passwort dürfen nicht leer sein.');
-    }
-    final existing = _repo.findByName(name);
-    if (existing != null) {
-      throw Exception('Dieser Benutzername existiert bereits.');
-    }
-
-    final u = AppUser(
-      name: name.trim(),
-      password: password,
-      role: 'user',
-      score: 0,
-      logins: [DateTime.now().toIso8601String()],
-    );
-
-    await _repo.add(u);
-
-    _current = u;
-    await LocalStore.saveSessionUserName(u.name);
-    return u;
-  }
-
+  // 3. Sign Out
   Future<void> logout() async {
-    _current = null;
-    await LocalStore.clearSession();
+    try {
+      await _auth.signOut();
+    } catch (e) {
+      print("Logout Error: ${e.toString()}");
+    }
   }
 
-  Future<void> addScore(int delta) async {
-    final u = _current;
-    if (u == null) return;
-    u.score += delta;
-    await _repo.persist();
+  // 4. Auth State Stream (to listen if user is logged in or not)
+  Stream<User?> get userStatus {
+    return _auth.authStateChanges();
   }
 }

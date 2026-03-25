@@ -14,7 +14,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "1048935741394-0n8920tpdld64snsjcuh5dpdec1s8aiv.apps.googleusercontent.com",
+          "client_id": "1048935741394-h2nvug7j0c745bgme6rjv5ashlh8nnll.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "1048935741394-r4adc6t8lda5kmeremngr3o6jlkak634.apps.googleusercontent.com",
+              "client_id": "1048935741394-1qtpte4dgb8sjt7m0ol4q0d97e2qpdff.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.fishChips"
+                "bundle_id": "com.example.myApp"
               }
             }
           ]
