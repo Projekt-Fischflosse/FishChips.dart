@@ -1,70 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'auth_wrapper.dart'; // This is the logic that chooses between Login and Home
 
-import 'Services/auth_service.dart';
-import 'Services/user_repository.dart';
-
-import 'ui/screens/login_screen.dart';
-import 'ui/screens/admin_screen.dart';
-import 'ui/screens/user_screen.dart';
-
-Future<void> main() async {
+void main() async {
+  // Ensure that all Flutter widgets are loaded before initializing Firebase
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 1) Repo + Service zentral erstellen
-  final userRepo = UserRepository();
-  await userRepo.init();
+  // Connect the app to your Firebase project
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  // 2) Auth mit positional ctor (wichtig!)
-  final auth = AuthService(userRepo);
-  await auth.restoreSession();
-
-  runApp(App(userRepo: userRepo, auth: auth));
+  runApp(const MyApp());
 }
 
-class App extends StatelessWidget {
-  final UserRepository userRepo;
-  final AuthService auth;
-
-  const App({
-    super.key,
-    required this.userRepo,
-    required this.auth,
-  });
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Fish&Chips',
-      home: _StartGate(userRepo: userRepo, auth: auth),
+      title: 'Fish & Chips App',
+      debugShowCheckedModeBanner: false, // Removes the red "Debug" banner
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      // The app starts at the AuthWrapper to check if the user is logged in
+      home: const AuthWrapper(), 
     );
-  }
-}
-
-/// Entscheidet beim Start:
-/// - wenn Session vorhanden: AdminScreen oder UserScreen
-/// - sonst: LoginScreen
-class _StartGate extends StatelessWidget {
-  final UserRepository userRepo;
-  final AuthService auth;
-
-  const _StartGate({
-    required this.userRepo,
-    required this.auth,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final u = auth.currentUser;
-
-    if (u == null) {
-      return LoginScreen(userRepo: userRepo, auth: auth);
-    }
-
-    if (u.role == 'admin') {
-      return AdminScreen(userRepo: userRepo, auth: auth);
-    }
-
-    return UserScreen(userRepo: userRepo, auth: auth);
   }
 }

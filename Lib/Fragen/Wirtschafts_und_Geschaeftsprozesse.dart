@@ -1,156 +1,112 @@
-import 'package:sqlite3/sqlite3.dart';
-
-void main() {
-  // Bestehende Datenbank öffnen
-  final db = sqlite3.open('fish_and_chips.db');
-
-  // 10 Fragen für Wirtschafts- und Geschäftsprozesse definieren
-  final fragen = [
-    {
-      // Kategorie für spätere Filterung
-      'category': 'Wirtschafts- und Geschäftsprozesse',
-
-      // Schwierigkeitsgrad
-      'difficulty': 'leicht',
-
-      // Frage
-      'question': 'Was versteht man unter einem Geschäftsprozess?',
-
-      // Antwortoptionen
-      'option_a': 'Eine Abteilung innerhalb eines Unternehmens',
-      'option_b': 'Eine strukturierte Abfolge von Aktivitäten die einen definierten Input in einen Output umwandelt',
-      'option_c': 'Ein jährlicher Finanzbericht eines Unternehmens',
-      'option_d': 'Ein Vertrag zwischen zwei Unternehmen',
-
-      // Richtige Antwort
-      'correct_answer': 'B',
-
-      // Erklärung
-      'explanation': 'Ein Geschäftsprozess ist eine Folge von Aktivitäten, die einen messbaren Input (z.B. Kundenauftrag) in einen definierten Output (z.B. geliefertes Produkt) umwandeln und dabei einen Mehrwert schaffen.',
-    },
-    {
-      'category': 'Wirtschafts- und Geschäftsprozesse',
-      'difficulty': 'leicht',
-      'question': 'Was ist der Unterschied zwischen einem Kernprozess und einem Supportprozess?',
-      'option_a': 'Kernprozesse sind wichtiger als Supportprozesse',
-      'option_b': 'Kernprozesse erzeugen direkt Mehrwert für den Kunden, Supportprozesse unterstützen die Kernprozesse',
-      'option_c': 'Supportprozesse laufen automatisch, Kernprozesse manuell',
-      'option_d': 'Es gibt keinen Unterschied, beide Begriffe bedeuten dasselbe',
-      'correct_answer': 'B',
-      'explanation': 'Kernprozesse (z.B. Produktion, Vertrieb) erzeugen direkt Mehrwert für den Kunden. Supportprozesse (z.B. IT, Buchhaltung) unterstützen die Kernprozesse intern.',
-    },
-    {
-      'category': 'Wirtschafts- und Geschäftsprozesse',
-      'difficulty': 'leicht',
-      'question': 'Was bedeutet die Abkürzung ERP?',
-      'option_a': 'Electronic Revenue Processing',
-      'option_b': 'Enterprise Resource Planning',
-      'option_c': 'External Relations Program',
-      'option_d': 'Efficient Resource Production',
-      'correct_answer': 'B',
-      'explanation': 'ERP (Enterprise Resource Planning) bezeichnet integrierte Softwaresysteme (z.B. SAP), die alle Geschäftsprozesse eines Unternehmens wie Einkauf, Produktion, Vertrieb und Buchhaltung in einem System bündeln.',
-    },
-    {
-      'category': 'Wirtschafts- und Geschäftsprozesse',
-      'difficulty': 'mittel',
-      'question': 'Was versteht man unter dem Prinzip der Prozessoptimierung?',
-      'option_a': 'Die Erhöhung der Mitarbeiterzahl in einem Prozess',
-      'option_b': 'Die Analyse und Verbesserung von Prozessen um Kosten zu senken, Zeit zu sparen und Qualität zu steigern',
-      'option_c': 'Die Auslagerung von Prozessen an externe Dienstleister',
-      'option_d': 'Die Dokumentation aller Unternehmensabläufe',
-      'correct_answer': 'B',
-      'explanation': 'Prozessoptimierung zielt darauf ab, Abläufe effizienter zu gestalten, indem Engpässe, Verschwendung und Fehlerquellen identifiziert und beseitigt werden (z.B. durch Lean Management oder Six Sigma).',
-    },
-    {
-      'category': 'Wirtschafts- und Geschäftsprozesse',
-      'difficulty': 'mittel',
-      'question': 'Was ist ein Pflichtenheft?',
-      'option_a': 'Eine gesetzliche Vorschrift für Unternehmen',
-      'option_b': 'Ein Dokument das beschreibt WIE und WOMIT der Auftragnehmer die Anforderungen des Lastenhefts umsetzt',
-      'option_c': 'Eine Liste aller Mitarbeiterpflichten',
-      'option_d': 'Ein Vertrag zwischen Kunde und Lieferant',
-      'correct_answer': 'B',
-      'explanation': 'Das Pflichtenheft wird vom Auftragnehmer erstellt und beschreibt konkret, wie die im Lastenheft genannten Anforderungen technisch und organisatorisch umgesetzt werden.',
-    },
-    {
-      'category': 'Wirtschafts- und Geschäftsprozesse',
-      'difficulty': 'mittel',
-      'question': 'Was ist ein Lastenheft?',
-      'option_a': 'Ein Dokument das alle technischen Umsetzungsdetails beschreibt',
-      'option_b': 'Eine Liste der Lieferanten eines Unternehmens',
-      'option_c': 'Ein Dokument das der Auftraggeber erstellt und beschreibt WAS er von einem System erwartet',
-      'option_d': 'Ein Bericht über die finanzielle Last eines Projekts',
-      'correct_answer': 'C',
-      'explanation': 'Das Lastenheft (auch Anforderungsspezifikation) wird vom Auftraggeber erstellt und beschreibt alle Anforderungen an ein System oder Produkt aus Kundensicht – das "Was" ohne das "Wie".',
-    },
-    {
-      'category': 'Wirtschafts- und Geschäftsprozesse',
-      'difficulty': 'leicht',
-      'question': 'Was beschreibt das Angebot-Nachfrage-Prinzip?',
-      'option_a': 'Je höher der Preis eines Produkts, desto mehr wird nachgefragt',
-      'option_b': 'Der Preis eines Gutes wird durch das Verhältnis von Angebot und Nachfrage bestimmt',
-      'option_c': 'Unternehmen bestimmen den Preis unabhängig von der Nachfrage',
-      'option_d': 'Der Staat legt alle Preise fest',
-      'correct_answer': 'B',
-      'explanation': 'Das Angebot-Nachfrage-Prinzip besagt: Übersteigt die Nachfrage das Angebot, steigen die Preise. Übersteigt das Angebot die Nachfrage, fallen die Preise. Der Gleichgewichtspreis liegt dort, wo sich beide treffen.',
-    },
-    {
-      'category': 'Wirtschafts- und Geschäftsprozesse',
-      'difficulty': 'mittel',
-      'question': 'Was ist der Unterschied zwischen Aufbauorganisation und Ablauforganisation?',
-      'option_a': 'Aufbauorganisation regelt die Abläufe, Ablauforganisation die Hierarchie',
-      'option_b': 'Aufbauorganisation legt die Hierarchie und Zuständigkeiten fest, Ablauforganisation regelt die zeitliche Abfolge von Prozessen',
-      'option_c': 'Beide beschreiben dasselbe nur aus verschiedenen Perspektiven',
-      'option_d': 'Ablauforganisation gilt nur für Produktionsbetriebe',
-      'correct_answer': 'B',
-      'explanation': 'Die Aufbauorganisation (Organigramm) legt Hierarchien, Stellen und Zuständigkeiten fest. Die Ablauforganisation regelt, in welcher Reihenfolge und wie Arbeitsprozesse ausgeführt werden.',
-    },
-    {
-      'category': 'Wirtschafts- und Geschäftsprozesse',
-      'difficulty': 'schwer',
-      'question': 'Was versteht man unter dem PDCA-Zyklus?',
-      'option_a': 'Ein Finanzmodell zur Gewinnberechnung',
-      'option_b': 'Ein iteratives Managementmodell mit den Phasen Plan, Do, Check, Act zur kontinuierlichen Verbesserung',
-      'option_c': 'Ein Projektmanagement-Tool für Softwareentwicklung',
-      'option_d': 'Eine Methode zur Mitarbeiterbewertung',
-      'correct_answer': 'B',
-      'explanation': 'Der PDCA-Zyklus (Deming-Kreis) ist ein Qualitätsmanagement-Modell: Plan (planen), Do (umsetzen), Check (überprüfen), Act (verbessern). Er wird für kontinuierliche Prozessverbesserung eingesetzt.',
-    },
-    {
-      'category': 'Wirtschafts- und Geschäftsprozesse',
-      'difficulty': 'schwer',
-      'question': 'Was ist Outsourcing und welchen Vorteil bietet es?',
-      'option_a': 'Die Verlagerung von Produktionsstandorten ins Ausland zur Steuervermeidung',
-      'option_b': 'Die Auslagerung von Geschäftsprozessen an externe Dienstleister um Kosten zu sparen und sich auf Kernkompetenzen zu konzentrieren',
-      'option_c': 'Die interne Verlagerung von Abteilungen innerhalb eines Unternehmens',
-      'option_d': 'Die Automatisierung von Prozessen durch Software',
-      'correct_answer': 'B',
-      'explanation': 'Outsourcing bezeichnet die Auslagerung von Unternehmensprozessen (z.B. IT, Buchhaltung, Logistik) an externe Spezialisten. Vorteile: Kosteneinsparung, Fokus auf Kernkompetenzen, Zugang zu Expertenwissen.',
-    },
-  ];
-
-  // Aktuelles Datum für created_date Spalte
-  final now = DateTime.now().toIso8601String();
-
-  // SQL-Statement vorbereiten – wird für jede Frage, Antwortoption und Erklärung wiederverwendet
-  final stmt = db.prepare('''
-    INSERT INTO questions (category, difficulty, question, option_a, option_b, option_c, option_d, correct_answer, explanation, created_date)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  ''');
-
-  // Jede Frage, Antwortoption, Erklärung und Schwierigkeitsgrad einzeln in die Datenbank einfügen
-  for (final f in fragen) {
-    stmt.execute([
-      f['category'], f['difficulty'], f['question'],
-      f['option_a'], f['option_b'], f['option_c'], f['option_d'],
-      f['correct_answer'], f['explanation'], now,
-    ]);
-  }
-
-  // Statement und Datenbank schließen
-  stmt.dispose();
-  db.dispose();
-
-  // Erfolgsmeldung mit Anzahl der eingefügten Fragen
-  print('${fragen.length} Wirtschafts- und Geschäftsprozesse Fragen eingefügt!');
-}
+const List<Map<String, String>> fragenWirtschaft = [
+  {
+    'category': 'Wirtschafts- und Geschäftsprozesse',
+    'difficulty': 'leicht',
+    'question': 'Was versteht man unter einem Geschäftsprozess?',
+    'option_a': 'Eine Abteilung innerhalb eines Unternehmens',
+    'option_b': 'Eine strukturierte Abfolge von Aktivitäten die einen definierten Input in einen Output umwandelt',
+    'option_c': 'Ein jährlicher Finanzbericht eines Unternehmens',
+    'option_d': 'Ein Vertrag zwischen zwei Unternehmen',
+    'correct_answer': 'B',
+    'explanation': 'Ein Geschäftsprozess ist eine Folge von Aktivitäten, die einen messbaren Input (z.B. Kundenauftrag) in einen definierten Output (z.B. geliefertes Produkt) umwandeln und dabei einen Mehrwert schaffen.',
+  },
+  {
+    'category': 'Wirtschafts- und Geschäftsprozesse',
+    'difficulty': 'leicht',
+    'question': 'Was ist der Unterschied zwischen einem Kernprozess und einem Supportprozess?',
+    'option_a': 'Kernprozesse sind wichtiger als Supportprozesse',
+    'option_b': 'Kernprozesse erzeugen direkt Mehrwert für den Kunden, Supportprozesse unterstützen die Kernprozesse',
+    'option_c': 'Supportprozesse laufen automatisch, Kernprozesse manuell',
+    'option_d': 'Es gibt keinen Unterschied, beide Begriffe bedeuten dasselbe',
+    'correct_answer': 'B',
+    'explanation': 'Kernprozesse (z.B. Produktion, Vertrieb) erzeugen direkt Mehrwert für den Kunden. Supportprozesse (z.B. IT, Buchhaltung) unterstützen die Kernprozesse intern.',
+  },
+  {
+    'category': 'Wirtschafts- und Geschäftsprozesse',
+    'difficulty': 'leicht',
+    'question': 'Was bedeutet die Abkürzung ERP?',
+    'option_a': 'Electronic Revenue Processing',
+    'option_b': 'Enterprise Resource Planning',
+    'option_c': 'External Relations Program',
+    'option_d': 'Efficient Resource Production',
+    'correct_answer': 'B',
+    'explanation': 'ERP (Enterprise Resource Planning) bezeichnet integrierte Softwaresysteme (z.B. SAP), die alle Geschäftsprozesse eines Unternehmens wie Einkauf, Produktion, Vertrieb und Buchhaltung in einem System bündeln.',
+  },
+  {
+    'category': 'Wirtschafts- und Geschäftsprozesse',
+    'difficulty': 'mittel',
+    'question': 'Was versteht man unter dem Prinzip der Prozessoptimierung?',
+    'option_a': 'Die Erhöhung der Mitarbeiterzahl in einem Prozess',
+    'option_b': 'Die Analyse und Verbesserung von Prozessen um Kosten zu senken, Zeit zu sparen und Qualität zu steigern',
+    'option_c': 'Die Auslagerung von Prozessen an externe Dienstleister',
+    'option_d': 'Die Dokumentation aller Unternehmensabläufe',
+    'correct_answer': 'B',
+    'explanation': 'Prozessoptimierung zielt darauf ab, Abläufe effizienter zu gestalten, indem Engpässe, Verschwendung und Fehlerquellen identifiziert und beseitigt werden (z.B. durch Lean Management oder Six Sigma).',
+  },
+  {
+    'category': 'Wirtschafts- und Geschäftsprozesse',
+    'difficulty': 'mittel',
+    'question': 'Was ist ein Pflichtenheft?',
+    'option_a': 'Eine gesetzliche Vorschrift für Unternehmen',
+    'option_b': 'Ein Dokument das beschreibt WIE und WOMIT der Auftragnehmer die Anforderungen des Lastenhefts umsetzt',
+    'option_c': 'Eine Liste aller Mitarbeiterpflichten',
+    'option_d': 'Ein Vertrag zwischen Kunde und Lieferant',
+    'correct_answer': 'B',
+    'explanation': 'Das Pflichtenheft wird vom Auftragnehmer erstellt und beschreibt konkret, wie die im Lastenheft genannten Anforderungen technisch und organisatorisch umgesetzt werden.',
+  },
+  {
+    'category': 'Wirtschafts- und Geschäftsprozesse',
+    'difficulty': 'mittel',
+    'question': 'Was ist ein Lastenheft?',
+    'option_a': 'Ein Dokument das alle technischen Umsetzungsdetails beschreibt',
+    'option_b': 'Eine Liste der Lieferanten eines Unternehmens',
+    'option_c': 'Ein Dokument das der Auftraggeber erstellt und beschreibt WAS er von einem System erwartet',
+    'option_d': 'Ein Bericht über die finanzielle Last eines Projekts',
+    'correct_answer': 'C',
+    'explanation': 'Das Lastenheft (auch Anforderungsspezifikation) wird vom Auftraggeber erstellt und beschreibt alle Anforderungen an ein System oder Produkt aus Kundensicht – das "Was" ohne das "Wie".',
+  },
+  {
+    'category': 'Wirtschafts- und Geschäftsprozesse',
+    'difficulty': 'leicht',
+    'question': 'Was beschreibt das Angebot-Nachfrage-Prinzip?',
+    'option_a': 'Je höher der Preis eines Produkts, desto mehr wird nachgefragt',
+    'option_b': 'Der Preis eines Gutes wird durch das Verhältnis von Angebot und Nachfrage bestimmt',
+    'option_c': 'Unternehmen bestimmen den Preis unabhängig von der Nachfrage',
+    'option_d': 'Der Staat legt alle Preise fest',
+    'correct_answer': 'B',
+    'explanation': 'Das Angebot-Nachfrage-Prinzip besagt: Übersteigt die Nachfrage das Angebot, steigen die Preise. Übersteigt das Angebot die Nachfrage, fallen die Preise. Der Gleichgewichtspreis liegt dort, wo sich beide treffen.',
+  },
+  {
+    'category': 'Wirtschafts- und Geschäftsprozesse',
+    'difficulty': 'mittel',
+    'question': 'Was ist der Unterschied zwischen Aufbauorganisation und Ablauforganisation?',
+    'option_a': 'Aufbauorganisation regelt die Abläufe, Ablauforganisation die Hierarchie',
+    'option_b': 'Aufbauorganisation legt die Hierarchie und Zuständigkeiten fest, Ablauforganisation regelt die zeitliche Abfolge von Prozessen',
+    'option_c': 'Beide beschreiben dasselbe nur aus verschiedenen Perspektiven',
+    'option_d': 'Ablauforganisation gilt nur für Produktionsbetriebe',
+    'correct_answer': 'B',
+    'explanation': 'Die Aufbauorganisation (Organigramm) legt Hierarchien, Stellen und Zuständigkeiten fest. Die Ablauforganisation regelt, in welcher Reihenfolge und wie Arbeitsprozesse ausgeführt werden.',
+  },
+  {
+    'category': 'Wirtschafts- und Geschäftsprozesse',
+    'difficulty': 'schwer',
+    'question': 'Was versteht man unter dem PDCA-Zyklus?',
+    'option_a': 'Ein Finanzmodell zur Gewinnberechnung',
+    'option_b': 'Ein iteratives Managementmodell mit den Phasen Plan, Do, Check, Act zur kontinuierlichen Verbesserung',
+    'option_c': 'Ein Projektmanagement-Tool für Softwareentwicklung',
+    'option_d': 'Eine Methode zur Mitarbeiterbewertung',
+    'correct_answer': 'B',
+    'explanation': 'Der PDCA-Zyklus (Deming-Kreis) ist ein Qualitätsmanagement-Modell: Plan (planen), Do (umsetzen), Check (überprüfen), Act (verbessern). Er wird für kontinuierliche Prozessverbesserung eingesetzt.',
+  },
+  {
+    'category': 'Wirtschafts- und Geschäftsprozesse',
+    'difficulty': 'schwer',
+    'question': 'Was ist Outsourcing und welchen Vorteil bietet es?',
+    'option_a': 'Die Verlagerung von Produktionsstandorten ins Ausland zur Steuervermeidung',
+    'option_b': 'Die Auslagerung von Geschäftsprozessen an externe Dienstleister um Kosten zu sparen und sich auf Kernkompetenzen zu konzentrieren',
+    'option_c': 'Die interne Verlagerung von Abteilungen innerhalb eines Unternehmens',
+    'option_d': 'Die Automatisierung von Prozessen durch Software',
+    'correct_answer': 'B',
+    'explanation': 'Outsourcing bezeichnet die Auslagerung von Unternehmensprozessen (z.B. IT, Buchhaltung, Logistik) an externe Spezialisten. Vorteile: Kosteneinsparung, Fokus auf Kernkompetenzen, Zugang zu Expertenwissen.',
+  },
+];
