@@ -1,130 +1,76 @@
 import 'package:flutter/material.dart';
-
-import '../../Services/auth_service.dart';
-import '../../Services/user_repository.dart';
-
-import '../theme/widgets/app_scaffold.dart';
-import '../theme/widgets/app_card.dart';
-import '../theme/widgets/primary_button.dart';
-
-import 'register_screen.dart';
-import 'admin_screen.dart';
-import 'user_screen.dart';
+import '../Services/auth_service.dart';
+import 'registration_screen.dart'; // This import links your screens
 
 class LoginScreen extends StatefulWidget {
-  final UserRepository userRepo;
-  final AuthService auth;
-
-  const LoginScreen({
-    super.key,
-    required this.userRepo,
-    required this.auth,
-  });
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _nameCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
-
-  bool _loading = false;
-  String? _error;
-
-  @override
-  void dispose() {
-    _nameCtrl.dispose();
-    _passCtrl.dispose();
-    super.dispose();
-  }
-
-  Future<void> _doLogin() async {
-    setState(() {
-      _loading = true;
-      _error = null;
-    });
-
-    try {
-      final u = await widget.auth.login(
-        name: _nameCtrl.text,
-        password: _passCtrl.text,
-      );
-
-      if (!mounted) return;
-
-      if (u.role == 'admin') {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => AdminScreen(userRepo: widget.userRepo, auth: widget.auth),
-          ),
-        );
-      } else {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (_) => UserScreen(userRepo: widget.userRepo, auth: widget.auth),
-          ),
-        );
-      }
-    } catch (e) {
-      setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
-    } finally {
-      if (mounted) setState(() => _loading = false);
-    }
-  }
+  // Controllers to capture email and password
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final AuthService _auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Login', style: Theme.of(context).textTheme.headlineMedium),
-          const SizedBox(height: 12),
-
-          if (_error != null) ...[
-            AppCard(child: Text(_error!, style: const TextStyle(color: Colors.red))),
-            const SizedBox(height: 12),
-          ],
-
-          AppCard(
-            child: Column(
-              children: [
-                TextField(
-                  controller: _nameCtrl,
-                  decoration: const InputDecoration(labelText: 'Benutzername'),
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  controller: _passCtrl,
-                  decoration: const InputDecoration(labelText: 'Passwort'),
-                  obscureText: true,
-                ),
-                const SizedBox(height: 14),
-                PrimaryButton(
-                  label: _loading ? 'Bitte warten…' : 'Einloggen',
-                  onPressed: _loading ? null : _doLogin,
-                ),
-              ],
+    return Scaffold(
+      appBar: AppBar(title: const Text("Login")),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Email Field
+            TextField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: "Email",
+                border: OutlineInputBorder(),
+              ),
             ),
-          ),
+            const SizedBox(height: 15),
+            // Password Field
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                labelText: "Password",
+                border: OutlineInputBorder(),
+              ),
+              obscureText: true,
+            ),
+            const SizedBox(height: 20),
+            
+            // SIGN IN BUTTON
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(minimumSize: const Size(200, 50)),
+              onPressed: () async {
+                String email = _emailController.text.trim();
+                String password = _passwordController.text;
+                print("DEBUG: Login attempt for '$email'");
+                await _auth.login(email, password);
+              },
+              child: const Text("Sign In"),
+            ),
 
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            height: 46,
-            child: OutlinedButton(
+            const SizedBox(height: 10),
+
+            // LINK TO REGISTRATION SCREEN
+            TextButton(
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => RegisterScreen(userRepo: widget.userRepo, auth: widget.auth),
-                  ),
+                // This line opens the Registration Screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RegistrationScreen()),
                 );
               },
-              child: const Text('Registrieren'),
+              child: const Text("Don't have an account? Create one"),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
