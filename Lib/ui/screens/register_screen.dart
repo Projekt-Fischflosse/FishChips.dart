@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../Services/auth_service.dart';
-import '../../../Services/user_repository.dart';
+import '../../Services/auth_service.dart';
+import '../../Services/user_repository.dart';
 
 import '../theme/widgets/app_scaffold.dart';
 import '../theme/widgets/app_card.dart';

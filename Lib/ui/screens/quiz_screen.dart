@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../Services/auth_service.dart';
@@ -6,9 +8,9 @@ import '../../Services/question_repository.dart';
 
 import '../../models/question.dart';
 
-import '../../theme/widgets/app_scaffold.dart';
-import '../../theme/widgets/app_card.dart';
-import '../../theme/widgets/primary_button.dart';
+import '../theme/widgets/app_scaffold.dart';
+import '../theme/widgets/app_card.dart';
+import '../theme/widgets/primary_button.dart';
 
 class QuizScreen extends StatefulWidget {
   final UserRepository userRepo;
@@ -36,7 +38,20 @@ class _QuizScreenState extends State<QuizScreen> {
   @override
   void initState() {
     super.initState();
-    _future = _repo.load();
+    _future = Future.value(_shuffled(_repo.load()));
+  }
+
+  List<Question> _shuffled(List<Question> qs) {
+    final rng = Random();
+    final list = List.of(qs)..shuffle(rng);
+    return list.map((q) {
+      final order = List.generate(q.antworten.length, (i) => i)..shuffle(rng);
+      return Question(
+        frage: q.frage,
+        antworten: [for (final i in order) q.antworten[i]],
+        richtig: order.indexOf(q.richtig),
+      );
+    }).toList();
   }
 
   void _select(int i) {
@@ -171,6 +186,26 @@ class _QuizScreenState extends State<QuizScreen> {
                     },
                   ),
                 ),
+
+                const SizedBox(height: 12),
+
+                if (_answered && q.explanation.isNotEmpty)
+                  AppCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Erklärung',
+                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                color: Colors.orange,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(q.explanation),
+                      ],
+                    ),
+                  ),
 
                 const SizedBox(height: 12),
 
